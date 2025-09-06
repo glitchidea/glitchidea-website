@@ -3,7 +3,7 @@
     {
       "id": 1,
       "name": "github",
-      "url": "github.com/glitchidea",
+      "url": "https://github.com/glitchidea",
       "icon": "fab fa-github",
       "type": "social"
     },
