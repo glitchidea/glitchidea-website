@@ -160,8 +160,7 @@ dist/
 build/
 out/
 
-# Static build files
-build-static.js
+# Note: build-static.js is needed for GitHub Pages deployment
 
 # Database files
 *.db
