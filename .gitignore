@@ -160,6 +160,9 @@ dist/
 build/
 out/
 
+# Static build files
+build-static.js
+
 # Database files
 *.db
 *.sqlite

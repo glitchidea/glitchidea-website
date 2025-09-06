@@ -5,9 +5,9 @@ name: Deploy Portfolio to GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -39,8 +39,40 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Build the site
-        run: npm run build
+      - name: Build static site
+        run: |
+          # Create public directory structure
+          mkdir -p dist
+          cp -r public/* dist/
+          
+          # Create index.html from EJS template
+          node -e "
+          const ejs = require('ejs');
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Load data
+          const socialData = JSON.parse(fs.readFileSync('./data/social.json', 'utf8'));
+          const projectsData = JSON.parse(fs.readFileSync('./data/projects.json', 'utf8'));
+          const servicesData = JSON.parse(fs.readFileSync('./data/services.json', 'utf8'));
+          const blogData = JSON.parse(fs.readFileSync('./data/blog.json', 'utf8'));
+          const workData = JSON.parse(fs.readFileSync('./data/work.json', 'utf8'));
+          
+          // Render main template
+          const template = fs.readFileSync('./views/index.ejs', 'utf8');
+          const html = ejs.render(template, {
+            title: 'GlitchIdea - Siber Güvenlik Uzmanı',
+            description: 'Siber Güvenlik Uzmanı & Güvenlik Danışmanı. Python Güvenlik Geliştiricisi, Django & Flask Uzmanı, Penetrasyon Test Uzmanı.',
+            keywords: 'siber güvenlik, penetrasyon test, güvenlik danışmanı, web geliştirme, django, flask, python güvenlik',
+            socialData,
+            projectsData,
+            servicesData,
+            blogData,
+            workData
+          });
+          
+          fs.writeFileSync('./dist/index.html', html);
+          "
         
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -48,8 +80,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository to Pages
-          path: '.'
+          # Upload dist directory to Pages
+          path: 'dist'
           
   # Deployment job
   deploy:

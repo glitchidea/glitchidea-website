@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "npm ci && echo 'Build process completed - Portfolio ready for deployment'",
+    "build": "npm ci && npm run build:static",
+    "build:static": "node build-static.js",
     "test": "echo 'No tests specified'"
   },
   "keywords": [
