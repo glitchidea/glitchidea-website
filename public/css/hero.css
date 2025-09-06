@@ -1,0 +1,512 @@
+/* ===== HERO SECTION ===== */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 80px;
+}
+
+.hero-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-2xl);
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+    position: relative;
+    z-index: 2;
+}
+
+.hero-content {
+    max-width: 600px;
+}
+
+.announcement-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-xl);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+    min-height: 4.2rem; /* Fixed height to prevent layout shift */
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Typewriter cursor effect */
+.hero-title.typewriter-cursor::after {
+    content: '|';
+    color: var(--accent-color);
+    font-weight: 300;
+    animation: blink 1s infinite;
+    margin-left: 2px;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-2xl);
+    line-height: 1.6;
+}
+
+.hero-cta {
+    display: flex;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+/* ===== VIEW ALL WORK BUTTON ===== */
+.hero-view-work {
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.view-work-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: transparent;
+    border: 2px solid var(--accent-color);
+    border-radius: var(--radius-lg);
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.view-work-btn:hover {
+    background: var(--accent-color);
+    color: var(--primary-bg);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 255, 65, 0.3);
+}
+
+.view-work-btn:active {
+    transform: translateY(0);
+}
+
+.view-work-btn i:first-child {
+    font-size: 1rem;
+}
+
+.view-work-btn i:last-child {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.view-work-btn:hover i:last-child {
+    transform: translateX(4px);
+}
+
+.hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== ORBITING CIRCLES ===== */
+.orbiting-circles-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.orbiting-circle {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.orbiting-circle:hover {
+    transform: scale(1.1);
+}
+
+.orbiting-circle img {
+    width: 48px;
+    height: 48px;
+    transition: all 0.3s ease;
+}
+
+.orbiting-circle:hover img {
+    transform: scale(1.1);
+}
+
+/* Inner circles (VS Code, Git) */
+.orbiting-circle.inner {
+    width: 48px;
+    height: 48px;
+    animation: orbit-inner 30s linear infinite;
+}
+
+.orbiting-circle.inner.vscode {
+    animation-delay: 0s;
+}
+
+.orbiting-circle.inner.git {
+    animation-delay: -12s;
+}
+
+/* Middle circle (Arch Linux) */
+.orbiting-circle.middle {
+    width: 48px;
+    height: 48px;
+    animation: orbit-middle 30s linear infinite reverse;
+}
+
+/* Outer circle (GitHub) */
+.orbiting-circle.outer {
+    width: 48px;
+    height: 48px;
+    animation: orbit-outer 30s linear infinite;
+}
+
+/* Orbit paths */
+.orbit-path {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.orbit-path.inner {
+    width: 160px;
+    height: 160px;
+}
+
+.orbit-path.middle {
+    width: 240px;
+    height: 240px;
+}
+
+.orbit-path.outer {
+    width: 380px;
+    height: 380px;
+}
+
+/* Animations */
+@keyframes orbit-inner {
+    0% {
+        transform: rotate(0deg) translateX(80px) rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg) translateX(80px) rotate(-360deg);
+    }
+}
+
+@keyframes orbit-middle {
+    0% {
+        transform: rotate(0deg) translateX(120px) rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg) translateX(120px) rotate(-360deg);
+    }
+}
+
+@keyframes orbit-outer {
+    0% {
+        transform: rotate(0deg) translateX(190px) rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg) translateX(190px) rotate(-360deg);
+    }
+}
+
+/* Responsive animations */
+@media (max-width: 768px) {
+    @keyframes orbit-inner {
+        0% {
+            transform: rotate(0deg) translateX(60px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(60px) rotate(-360deg);
+        }
+    }
+    
+    @keyframes orbit-middle {
+        0% {
+            transform: rotate(0deg) translateX(90px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(90px) rotate(-360deg);
+        }
+    }
+    
+    @keyframes orbit-outer {
+        0% {
+            transform: rotate(0deg) translateX(140px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(140px) rotate(-360deg);
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    @keyframes orbit-inner {
+        0% {
+            transform: rotate(0deg) translateX(50px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(50px) rotate(-360deg);
+        }
+    }
+    
+    @keyframes orbit-middle {
+        0% {
+            transform: rotate(0deg) translateX(75px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(75px) rotate(-360deg);
+        }
+    }
+    
+    @keyframes orbit-outer {
+        0% {
+            transform: rotate(0deg) translateX(110px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(110px) rotate(-360deg);
+        }
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .hero-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xl);
+        text-align: center;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+        min-height: 3rem; /* Fixed height for mobile */
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .hero-cta {
+        justify-content: center;
+    }
+    
+    .orbiting-circles-container {
+        width: 350px;
+        height: 350px;
+    }
+    
+    .orbiting-circle.inner {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .orbiting-circle.inner.vscode {
+        animation-delay: 0s;
+    }
+    
+    .orbiting-circle.inner.git {
+        animation-delay: -4s;
+    }
+    
+    .orbiting-circle.middle {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .orbiting-circle.outer {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .orbit-path.inner {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .orbit-path.middle {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .orbit-path.outer {
+        width: 280px;
+        height: 280px;
+    }
+    
+    .orbiting-circle img {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2rem;
+        min-height: 2.4rem; /* Fixed height for small mobile */
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .hero-cta {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .orbiting-circles-container {
+        width: 280px;
+        height: 280px;
+    }
+    
+    .orbiting-circle.inner {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .orbiting-circle.inner.vscode {
+        animation-delay: 0s;
+    }
+    
+    .orbiting-circle.inner.git {
+        animation-delay: -12s;
+    }
+    
+    .orbiting-circle.middle {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .orbiting-circle.outer {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .orbit-path.inner {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .orbit-path.middle {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .orbit-path.outer {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .orbiting-circle img {
+        width: 36px;
+        height: 36px;
+    }
+    
+    /* View Work Button Mobile */
+    .hero-view-work {
+        margin-top: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .view-work-btn {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.9rem;
+    }
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: var(--spacing-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.scroll-text {
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.scroll-arrow {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Particles Container */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Ripple Effect for Buttons */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}

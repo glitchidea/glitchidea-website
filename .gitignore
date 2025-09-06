@@ -74,11 +74,11 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+# Note: dist/ is needed for GitHub Pages deployment
 
 # Gatsby files
 .cache/
-public
+# Note: public/ is needed for GitHub Pages deployment
 
 # Storybook build outputs
 .out
