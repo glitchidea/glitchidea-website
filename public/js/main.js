@@ -163,7 +163,7 @@ function setupProjectsTable() {
     // Load projects from API
     async function loadProjectsData() {
         try {
-            const response = await fetch('/api/projects');
+            const response = await fetch('./api/projects.json');
             if (response.ok) {
                 const data = await response.json();
                 projectsData = data.projects || [];

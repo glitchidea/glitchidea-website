@@ -99,8 +99,17 @@ const html = ejs.render(layoutHtml, {
   keywords: 'siber güvenlik, penetrasyon test, güvenlik danışmanı, web geliştirme, django, flask, python güvenlik'
 });
 
+// Fix paths for GitHub Pages (remove leading slashes)
+let fixedHtml = html
+  .replace(/href="\/css\//g, 'href="./css/')
+  .replace(/href="\/js\//g, 'href="./js/')
+  .replace(/href="\/images\//g, 'href="./images/')
+  .replace(/src="\/images\//g, 'src="./images/')
+  .replace(/src="\/js\//g, 'src="./js/')
+  .replace(/src="\/css\//g, 'src="./css/');
+
 // Write index.html
-fs.writeFileSync('./dist/index.html', html);
+fs.writeFileSync('./dist/index.html', fixedHtml);
 
 // Ensure dist/api directory exists
 if (!fs.existsSync('dist/api')) {

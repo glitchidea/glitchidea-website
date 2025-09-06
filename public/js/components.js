@@ -3,7 +3,7 @@
 // Load and display featured projects
 async function loadFeaturedProjects() {
     try {
-        const response = await fetch('/api/projects');
+        const response = await fetch('./api/projects.json');
         const data = await response.json();
         
         const featuredGrid = document.getElementById('featured-projects-grid');
@@ -54,7 +54,7 @@ function createFeaturedProjectCard(project) {
 // Load and display all projects (for modal)
 async function loadAllProjects() {
     try {
-        const response = await fetch('/api/projects');
+        const response = await fetch('./api/projects.json');
         const data = await response.json();
         
         const allProjectsGrid = document.getElementById('all-projects-grid');
@@ -104,7 +104,7 @@ function createProjectCard(project) {
 // Load and display featured work experience
 async function loadFeaturedWork() {
     try {
-        const response = await fetch('/api/work');
+        const response = await fetch('./api/work.json');
         const data = await response.json();
         
         const featuredWorkCard = document.getElementById('featured-work-card');
@@ -145,7 +145,7 @@ function createFeaturedWorkCard(work) {
 // Load and display all work experience (for modal)
 async function loadAllWork() {
     try {
-        const response = await fetch('/api/work');
+        const response = await fetch('./api/work.json');
         const data = await response.json();
         
         const allWorkTimeline = document.getElementById('all-work-timeline');
@@ -199,7 +199,7 @@ function createTimelineItem(work, index) {
 // Load and display blog posts
 async function loadBlogPosts() {
     try {
-        const response = await fetch('/api/blog');
+        const response = await fetch('./api/blog.json');
         const data = await response.json();
         
         const blogGrid = document.getElementById('blog-grid');

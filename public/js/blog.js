@@ -21,7 +21,7 @@ class BlogComponent {
     async loadLatestBlogPost() {
         try {
             // Load featured blog post from API
-            const response = await fetch('/api/blog');
+            const response = await fetch('./api/blog.json');
             const data = await response.json();
             
             // Find featured post or use first post
@@ -141,7 +141,7 @@ class BlogComponent {
     // Load multiple blog posts
     async loadBlogPosts() {
         try {
-            const response = await fetch('/api/blog');
+            const response = await fetch('./api/blog.json');
             const data = await response.json();
             
             this.blogData = data.posts || [];

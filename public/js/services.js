@@ -27,7 +27,7 @@ class ServicesComponent {
     
     async loadServices() {
         try {
-            const response = await fetch('/api/services');
+            const response = await fetch('./api/services.json');
             const data = await response.json();
             
             this.servicesData = data.services || [];
