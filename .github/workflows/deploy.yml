@@ -52,11 +52,11 @@ jobs:
           const path = require('path');
           
           // Load data
-          const socialData = JSON.parse(fs.readFileSync('./data/social.json', 'utf8'));
-          const projectsData = JSON.parse(fs.readFileSync('./data/projects.json', 'utf8'));
-          const servicesData = JSON.parse(fs.readFileSync('./data/services.json', 'utf8'));
-          const blogData = JSON.parse(fs.readFileSync('./data/blog.json', 'utf8'));
-          const workData = JSON.parse(fs.readFileSync('./data/work.json', 'utf8'));
+          const socialData = JSON.parse(fs.readFileSync('./dist/api/social.json', 'utf8'));
+          const projectsData = JSON.parse(fs.readFileSync('./dist/api/projects.json', 'utf8'));
+          const servicesData = JSON.parse(fs.readFileSync('./dist/api/services.json', 'utf8'));
+          const blogData = JSON.parse(fs.readFileSync('./dist/api/blog.json', 'utf8'));
+          const workData = JSON.parse(fs.readFileSync('./dist/api/work.json', 'utf8'));
           
           // Render main template
           const template = fs.readFileSync('./views/index.ejs', 'utf8');

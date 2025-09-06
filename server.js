@@ -64,7 +64,7 @@ app.get('/', (req, res) => {
 app.get('/api/projects', (req, res) => {
   try {
     // Load all projects from single JSON file
-    const projectsData = require('./data/projects.json');
+    const projectsData = require('./dist/api/projects.json');
     res.json(projectsData);
   } catch (error) {
     console.error('Error loading projects:', error);
@@ -75,7 +75,7 @@ app.get('/api/projects', (req, res) => {
 // API route for services
 app.get('/api/services', (req, res) => {
   try {
-    const servicesData = require('./data/services.json');
+    const servicesData = require('./dist/api/services.json');
     res.json(servicesData);
   } catch (error) {
     console.error('Error loading services:', error);
@@ -86,7 +86,7 @@ app.get('/api/services', (req, res) => {
 // API route for blog posts
 app.get('/api/blog', (req, res) => {
   try {
-    const blogData = require('./data/blog.json');
+    const blogData = require('./dist/api/blog.json');
     res.json(blogData);
   } catch (error) {
     console.error('Error loading blog posts:', error);
@@ -97,7 +97,7 @@ app.get('/api/blog', (req, res) => {
 // API route for featured blog post
 app.get('/api/blog/featured', (req, res) => {
   try {
-    const blogData = require('./data/blog.json');
+    const blogData = require('./dist/api/blog.json');
     const featuredPost = blogData.posts.find(post => post.featured === true);
     
     if (featuredPost) {
@@ -117,7 +117,7 @@ app.get('/api/blog/featured', (req, res) => {
 app.get('/api/footer-projects', (req, res) => {
   try {
     // Load all projects from single JSON file
-    const projectsData = require('./data/projects.json');
+    const projectsData = require('./dist/api/projects.json');
     
     // Filter projects that should appear in footer (first 3 projects)
     const footerProjects = projectsData.projects.slice(0, 3);
@@ -140,7 +140,7 @@ app.get('/api/projects/:category', (req, res) => {
     }
     
     // Load from single JSON file and filter by category
-    const projectsData = require('./data/projects.json');
+    const projectsData = require('./dist/api/projects.json');
     const categoryProjects = projectsData.projects.filter(project => 
       project.category.toLowerCase() === category.toLowerCase()
     );
@@ -157,7 +157,7 @@ app.get('/api/all-projects', (req, res) => {
     const category = req.query.category;
     
     // Load from single JSON file
-    const projectsData = require('./data/projects.json');
+    const projectsData = require('./dist/api/projects.json');
     
     if (category && category !== 'all') {
       // Filter by specific category
@@ -176,7 +176,7 @@ app.get('/api/all-projects', (req, res) => {
 });
 
 app.get('/api/services', (req, res) => {
-  const services = require('./data/services.json');
+  const services = require('./dist/api/services.json');
   res.json(services);
 });
 
@@ -184,7 +184,7 @@ app.get('/api/services', (req, res) => {
 app.get('/api/work', (req, res) => {
   try {
     // Load work experience (same as business for now)
-    const workData = require('./data/work.json');
+    const workData = require('./dist/api/work.json');
     res.json(workData);
   } catch (error) {
     console.error('Error loading work:', error);
@@ -195,7 +195,7 @@ app.get('/api/work', (req, res) => {
 app.get('/api/all-work', (req, res) => {
   try {
     const category = req.query.category;
-    const workData = require('./data/work.json');
+    const workData = require('./dist/api/work.json');
     
     if (category && category !== 'all') {
       // Filter by category
@@ -221,7 +221,7 @@ app.get('/api/all-work', (req, res) => {
 });
 
 app.get('/api/blog', (req, res) => {
-  const blog = require('./data/blog.json');
+  const blog = require('./dist/api/blog.json');
   res.json(blog);
 });
 
@@ -230,7 +230,7 @@ app.get('/api/blog', (req, res) => {
 // Social links endpoint
 app.get('/api/social', (req, res) => {
   try {
-    const socialData = fs.readFileSync('./data/social.json', 'utf8');
+    const socialData = fs.readFileSync('./dist/api/social.json', 'utf8');
     const social = JSON.parse(socialData);
     res.json(social);
   } catch (error) {

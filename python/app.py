@@ -19,11 +19,12 @@ def load_config():
     else:
         # Varsayılan config oluştur
         config['PATHS'] = {
-            'data_path': '../data',
+            'data_path': '../dist/api',
             'services_file': 'services.json',
             'projects_file': 'projects.json',
             'social_file': 'social.json',
-            'blog_file': 'blog.json'
+            'blog_file': 'blog.json',
+            'work_file': 'work.json'
         }
         with open(CONFIG_FILE, 'w') as configfile:
             config.write(configfile)
@@ -32,7 +33,7 @@ def load_config():
 def get_json_data(filename):
     """JSON dosyasını oku"""
     config = load_config()
-    data_path = config.get('PATHS', 'data_path', fallback='../data')
+    data_path = config.get('PATHS', 'data_path', fallback='../dist/api')
     file_path = os.path.join(data_path, filename)
     
     try:
@@ -46,7 +47,7 @@ def get_json_data(filename):
 def save_json_data(filename, data):
     """JSON dosyasına kaydet"""
     config = load_config()
-    data_path = config.get('PATHS', 'data_path', fallback='../data')
+    data_path = config.get('PATHS', 'data_path', fallback='../dist/api')
     file_path = os.path.join(data_path, filename)
     
     # Dizin yoksa oluştur
@@ -312,6 +313,65 @@ def api_blog():
             save_json_data('blog.json', blog_data)
             
             return jsonify({'success': True, 'message': 'Blog yazısı silindi!'})
+        except Exception as e:
+            return jsonify({'success': False, 'message': f'Hata: {str(e)}'})
+
+@app.route('/work')
+def work():
+    """İş deneyimi sayfası"""
+    data = get_json_data('work.json')
+    return render_template('work.html', data=data)
+
+@app.route('/api/work', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def api_work():
+    """İş deneyimi API"""
+    if request.method == 'GET':
+        return jsonify(get_json_data('work.json'))
+    
+    elif request.method == 'POST':
+        try:
+            data = request.get_json()
+            work_data = get_json_data('work.json')
+            
+            # Yeni ID oluştur
+            new_id = max([w.get('id', 0) for w in work_data.get('work_experience', [])], default=0) + 1
+            data['id'] = new_id
+            
+            work_data.setdefault('work_experience', []).append(data)
+            save_json_data('work.json', work_data)
+            
+            return jsonify({'success': True, 'message': 'İş deneyimi eklendi!', 'id': new_id})
+        except Exception as e:
+            return jsonify({'success': False, 'message': f'Hata: {str(e)}'})
+    
+    elif request.method == 'PUT':
+        try:
+            data = request.get_json()
+            work_id = data.get('id')
+            work_data = get_json_data('work.json')
+            
+            for i, work in enumerate(work_data.get('work_experience', [])):
+                if str(work.get('id')) == str(work_id):
+                    work_data['work_experience'][i] = data
+                    save_json_data('work.json', work_data)
+                    return jsonify({'success': True, 'message': 'İş deneyimi güncellendi!'})
+            
+            return jsonify({'success': False, 'message': 'İş deneyimi bulunamadı!'})
+        except Exception as e:
+            return jsonify({'success': False, 'message': f'Hata: {str(e)}'})
+    
+    elif request.method == 'DELETE':
+        try:
+            work_id = request.args.get('id')
+            work_data = get_json_data('work.json')
+            
+            work_data['work_experience'] = [
+                w for w in work_data.get('work_experience', []) 
+                if str(w.get('id')) != str(work_id)
+            ]
+            save_json_data('work.json', work_data)
+            
+            return jsonify({'success': True, 'message': 'İş deneyimi silindi!'})
         except Exception as e:
             return jsonify({'success': False, 'message': f'Hata: {str(e)}'})
 

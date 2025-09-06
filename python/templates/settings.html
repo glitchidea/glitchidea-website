@@ -441,7 +441,7 @@ function executeGitCommand(command) {
             gitCommand = 'git status';
             break;
         case 'add':
-            gitCommand = addAll ? 'git add .' : 'git add data/*.json';
+            gitCommand = addAll ? 'git add .' : 'git add dist/api/*.json';
             break;
         case 'commit':
             gitCommand = `git commit -m "${commitMessage}"`;
