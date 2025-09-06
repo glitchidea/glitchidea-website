@@ -1,0 +1,567 @@
+{% extends "base.html" %}
+
+{% block title %}Ayarlar - JSON Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-cog"></i> Sistem Ayarları
+                </h3>
+            </div>
+            <div class="card-body">
+                <form id="settingsForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-folder"></i> Dosya Yolları
+                            </h5>
+                            
+                            <div class="mb-3">
+                                <label for="data_path" class="form-label">Veri Klasörü Yolu</label>
+                                <input type="text" class="form-control" id="data_path" name="data_path" 
+                                       value="{{ config.get('PATHS', 'data_path', fallback='../data') }}"
+                                       placeholder="Örnek: ../data">
+                                <div class="form-text">JSON dosyalarının bulunduğu ana klasör</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="services_file" class="form-label">Hizmetler Dosyası</label>
+                                <input type="text" class="form-control" id="services_file" name="services_file" 
+                                       value="{{ config.get('PATHS', 'services_file', fallback='services.json') }}"
+                                       placeholder="services.json">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="projects_file" class="form-label">Projeler Dosyası</label>
+                                <input type="text" class="form-control" id="projects_file" name="projects_file" 
+                                       value="{{ config.get('PATHS', 'projects_file', fallback='projects.json') }}"
+                                       placeholder="projects.json">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="social_file" class="form-label">Sosyal Medya Dosyası</label>
+                                <input type="text" class="form-control" id="social_file" name="social_file" 
+                                       value="{{ config.get('PATHS', 'social_file', fallback='social.json') }}"
+                                       placeholder="social.json">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h5 class="text-success mb-3">
+                                <i class="fas fa-file-alt"></i> Diğer Dosyalar
+                            </h5>
+                            
+                                                    <div class="mb-3">
+                            <label for="blog_file" class="form-label">Blog Dosyası</label>
+                            <input type="text" class="form-control" id="blog_file" name="blog_file"
+                                   value="{{ config.get('PATHS', 'blog_file', fallback='blog.json') }}"
+                                   placeholder="blog.json">
+                        </div>
+                            
+                            <div class="mb-3">
+                                <label for="featured_work_file" class="form-label">Öne Çıkan İşler Dosyası</label>
+                                <input type="text" class="form-control" id="featured_work_file" name="featured_work_file" 
+                                       value="{{ config.get('PATHS', 'featured_work_file', fallback='featured-work.json') }}"
+                                       placeholder="featured-work.json">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="work_file" class="form-label">İşler Dosyası</label>
+                                <input type="text" class="form-control" id="work_file" name="work_file" 
+                                       value="{{ config.get('PATHS', 'work_file', fallback='work.json') }}"
+                                       placeholder="work.json">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="backup_path" class="form-label">Yedekleme Klasörü</label>
+                                <input type="text" class="form-control" id="backup_path" name="backup_path" 
+                                       value="{{ config.get('PATHS', 'backup_path', fallback='../backups') }}"
+                                       placeholder="Örnek: ../backups">
+                                <div class="form-text">Yedek dosyaların kaydedileceği klasör</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5 class="text-warning mb-3">
+                                <i class="fas fa-shield-alt"></i> Güvenlik Ayarları
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="auto_backup" name="auto_backup" 
+                                                   {% if config.get('SECURITY', 'auto_backup', fallback='true') == 'true' %}checked{% endif %}>
+                                            <label class="form-check-label" for="auto_backup">
+                                                Otomatik Yedekleme
+                                            </label>
+                                        </div>
+                                        <div class="form-text">Değişikliklerden önce otomatik yedek al</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="validate_json" name="validate_json" 
+                                                   {% if config.get('SECURITY', 'validate_json', fallback='true') == 'true' %}checked{% endif %}>
+                                            <label class="form-check-label" for="validate_json">
+                                                JSON Doğrulama
+                                            </label>
+                                        </div>
+                                        <div class="form-text">Kaydetmeden önce JSON formatını doğrula</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="log_changes" name="log_changes" 
+                                                   {% if config.get('SECURITY', 'log_changes', fallback='true') == 'true' %}checked{% endif %}>
+                                            <label class="form-check-label" for="log_changes">
+                                                Değişiklik Logları
+                                            </label>
+                                        </div>
+                                        <div class="form-text">Tüm değişiklikleri log dosyasına kaydet</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="confirm_delete" name="confirm_delete" 
+                                                   {% if config.get('SECURITY', 'confirm_delete', fallback='true') == 'true' %}checked{% endif %}>
+                                            <label class="form-check-label" for="confirm_delete">
+                                                Silme Onayı
+                                            </label>
+                                        </div>
+                                        <div class="form-text">Silme işlemlerinde onay iste</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                                    <i class="fas fa-undo"></i> Varsayılana Döndür
+                                </button>
+                                
+                                <div>
+                                    <button type="button" class="btn btn-info me-2" onclick="testConnection()">
+                                        <i class="fas fa-plug"></i> Bağlantıyı Test Et
+                                    </button>
+                                    <button type="submit" class="btn btn-primary me-2">
+                                        <i class="fas fa-save"></i> Ayarları Kaydet
+                                    </button>
+                                    <button type="button" class="btn btn-success" onclick="showGitHubModal()">
+                                        <i class="fab fa-github"></i> GitHub Push
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Test Connection Modal -->
+<div class="modal fade" id="testModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Bağlantı Testi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="testResults">
+                <!-- Test sonuçları buraya gelecek -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GitHub Push Modal -->
+<div class="modal fade" id="gitHubModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fab fa-github"></i> GitHub Push Terminal
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-cog"></i> Push Seçenekleri
+                        </h6>
+                        
+                        <div class="mb-3">
+                            <label for="commit_message" class="form-label">Commit Mesajı</label>
+                            <input type="text" class="form-control" id="commit_message" 
+                                   placeholder="Değişiklikleri kaydet" value="Update JSON data files">
+                            <div class="form-text">Git commit mesajı</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="branch_name" class="form-label">Branch</label>
+                            <select class="form-select" id="branch_name">
+                                <option value="main">main</option>
+                                <option value="master">master</option>
+                                <option value="develop">develop</option>
+                            </select>
+                            <div class="form-text">Push yapılacak branch</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="force_push" name="force_push">
+                                <label class="form-check-label" for="force_push">
+                                    Force Push
+                                </label>
+                            </div>
+                            <div class="form-text">Dikkatli kullanın! (--force)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="add_all" name="add_all" checked>
+                                <label class="form-check-label" for="add_all">
+                                    Tüm Değişiklikleri Ekle
+                                </label>
+                            </div>
+                            <div class="form-text">git add . (tüm dosyaları ekle)</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-primary" onclick="executeGitCommand('status')">
+                                <i class="fas fa-info-circle"></i> Git Status
+                            </button>
+                            <button type="button" class="btn btn-outline-success" onclick="executeGitCommand('add')">
+                                <i class="fas fa-plus"></i> Git Add
+                            </button>
+                            <button type="button" class="btn btn-outline-warning" onclick="executeGitCommand('commit')">
+                                <i class="fas fa-save"></i> Git Commit
+                            </button>
+                            <button type="button" class="btn btn-success" onclick="executeGitCommand('push')">
+                                <i class="fab fa-github"></i> Git Push
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6 class="text-success mb-3">
+                            <i class="fas fa-terminal"></i> Terminal Çıktısı
+                        </h6>
+                        
+                        <div class="terminal-output" id="terminalOutput">
+                            <div class="terminal-header">
+                                <span class="terminal-title">Git Terminal</span>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearTerminal()">
+                                    <i class="fas fa-trash"></i> Temizle
+                                </button>
+                            </div>
+                            <div class="terminal-content" id="terminalContent">
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">$</span>
+                                    <span class="terminal-text">Terminal hazır...</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <h6 class="text-info mb-2">
+                                <i class="fas fa-info-circle"></i> Hızlı Komutlar
+                            </h6>
+                            <div class="d-grid gap-1">
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="quickCommand('git status')">
+                                    git status
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="quickCommand('git add . && git commit -m \"Update\" && git push')">
+                                    Add + Commit + Push
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="quickCommand('git log --oneline -5')">
+                                    Son 5 Commit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" onclick="executeFullWorkflow()">
+                    <i class="fas fa-rocket"></i> Tam Workflow Çalıştır
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('settingsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    saveSettings();
+});
+
+function saveSettings() {
+    const formData = new FormData(document.getElementById('settingsForm'));
+    const data = {};
+    
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    
+    // Checkbox değerlerini ekle
+    data.auto_backup = document.getElementById('auto_backup').checked;
+    data.validate_json = document.getElementById('validate_json').checked;
+    data.log_changes = document.getElementById('log_changes').checked;
+    data.confirm_delete = document.getElementById('confirm_delete').checked;
+    
+    fetch('/api/save_config', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('success', data.message);
+        } else {
+            showAlert('danger', data.message);
+        }
+    })
+    .catch(error => {
+        showAlert('danger', 'Bir hata oluştu: ' + error.message);
+    });
+}
+
+function resetForm() {
+    if (confirm('Tüm ayarları varsayılan değerlere sıfırlamak istediğinizden emin misiniz?')) {
+        document.getElementById('settingsForm').reset();
+        showAlert('info', 'Form varsayılan değerlere sıfırlandı.');
+    }
+}
+
+function testConnection() {
+    const dataPath = document.getElementById('data_path').value;
+    const modal = new bootstrap.Modal(document.getElementById('testModal'));
+    const resultsDiv = document.getElementById('testResults');
+    
+    resultsDiv.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Test ediliyor...</div>';
+    modal.show();
+    
+    // Burada gerçek bir test API'si çağrılabilir
+    setTimeout(() => {
+        resultsDiv.innerHTML = `
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i> Bağlantı başarılı!
+                <br><small>Veri klasörü: ${dataPath}</small>
+            </div>
+        `;
+    }, 1000);
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.querySelector('main').insertBefore(alertDiv, document.querySelector('main').firstChild);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+
+// GitHub Push Functions
+function showGitHubModal() {
+    const modal = new bootstrap.Modal(document.getElementById('gitHubModal'));
+    modal.show();
+    addTerminalLine('GitHub Push Terminal açıldı...', 'info');
+}
+
+function addTerminalLine(text, type = 'text') {
+    const terminalContent = document.getElementById('terminalContent');
+    const line = document.createElement('div');
+    line.className = 'terminal-line';
+    
+    const timestamp = new Date().toLocaleTimeString();
+    const prompt = document.createElement('span');
+    prompt.className = 'terminal-prompt';
+    prompt.textContent = '$';
+    
+    const textSpan = document.createElement('span');
+    textSpan.className = `terminal-text terminal-${type}`;
+    textSpan.textContent = `[${timestamp}] ${text}`;
+    
+    line.appendChild(prompt);
+    line.appendChild(textSpan);
+    terminalContent.appendChild(line);
+    
+    // Auto-scroll to bottom
+    terminalContent.scrollTop = terminalContent.scrollHeight;
+}
+
+function clearTerminal() {
+    document.getElementById('terminalContent').innerHTML = `
+        <div class="terminal-line">
+            <span class="terminal-prompt">$</span>
+            <span class="terminal-text">Terminal temizlendi...</span>
+        </div>
+    `;
+}
+
+function executeGitCommand(command) {
+    const commitMessage = document.getElementById('commit_message').value;
+    const branchName = document.getElementById('branch_name').value;
+    const forcePush = document.getElementById('force_push').checked;
+    const addAll = document.getElementById('add_all').checked;
+    
+    let gitCommand = '';
+    
+    switch(command) {
+        case 'status':
+            gitCommand = 'git status';
+            break;
+        case 'add':
+            gitCommand = addAll ? 'git add .' : 'git add data/*.json';
+            break;
+        case 'commit':
+            gitCommand = `git commit -m "${commitMessage}"`;
+            break;
+        case 'push':
+            gitCommand = forcePush ? `git push origin ${branchName} --force` : `git push origin ${branchName}`;
+            break;
+    }
+    
+    addTerminalLine(`Executing: ${gitCommand}`, 'command');
+    
+    fetch('/api/git_command', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            command: gitCommand,
+            type: command
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            addTerminalLine(data.output, 'success');
+            if (data.message) {
+                showAlert('success', data.message);
+            }
+        } else {
+            addTerminalLine(data.error, 'error');
+            showAlert('danger', data.message);
+        }
+    })
+    .catch(error => {
+        addTerminalLine(`Error: ${error.message}`, 'error');
+        showAlert('danger', 'Komut çalıştırılırken hata oluştu: ' + error.message);
+    });
+}
+
+function quickCommand(command) {
+    addTerminalLine(`Quick command: ${command}`, 'command');
+    
+    fetch('/api/git_command', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            command: command,
+            type: 'quick'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            addTerminalLine(data.output, 'success');
+        } else {
+            addTerminalLine(data.error, 'error');
+        }
+    })
+    .catch(error => {
+        addTerminalLine(`Error: ${error.message}`, 'error');
+    });
+}
+
+function executeFullWorkflow() {
+    if (confirm('Tam workflow çalıştırılacak:\n1. git add .\n2. git commit\n3. git push\n\nDevam etmek istiyor musunuz?')) {
+        addTerminalLine('Tam workflow başlatılıyor...', 'info');
+        
+        const commitMessage = document.getElementById('commit_message').value;
+        const branchName = document.getElementById('branch_name').value;
+        const forcePush = document.getElementById('force_push').checked;
+        
+        const commands = [
+            'git add .',
+            `git commit -m "${commitMessage}"`,
+            forcePush ? `git push origin ${branchName} --force` : `git push origin ${branchName}`
+        ];
+        
+        executeCommandsSequentially(commands, 0);
+    }
+}
+
+function executeCommandsSequentially(commands, index) {
+    if (index >= commands.length) {
+        addTerminalLine('Workflow tamamlandı!', 'success');
+        showAlert('success', 'GitHub push işlemi başarıyla tamamlandı!');
+        return;
+    }
+    
+    const command = commands[index];
+    addTerminalLine(`[${index + 1}/${commands.length}] ${command}`, 'command');
+    
+    fetch('/api/git_command', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            command: command,
+            type: 'workflow'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            addTerminalLine(data.output, 'success');
+            // Next command
+            setTimeout(() => {
+                executeCommandsSequentially(commands, index + 1);
+            }, 1000);
+        } else {
+            addTerminalLine(data.error, 'error');
+            showAlert('danger', `Komut başarısız: ${command}`);
+        }
+    })
+    .catch(error => {
+        addTerminalLine(`Error: ${error.message}`, 'error');
+        showAlert('danger', 'Workflow sırasında hata oluştu');
+    });
+}
+</script>
+{% endblock %}

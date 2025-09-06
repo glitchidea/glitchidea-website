@@ -1,0 +1,185 @@
+<footer class="footer">
+    <div class="footer-container">
+        <!-- Animated top border -->
+        <div class="footer-border"></div>
+        
+        <div class="footer-content">
+            <!-- Brand Section -->
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <span class="logo-text">#</span>
+                    <span class="logo-name">GlitchIdea</span>
+                </div>
+                <p class="footer-description">
+                    Cybersecurity uzmanı ve geliştirici. Modern ve güvenli dijital çözümler.
+                </p>
+            </div>
+            
+            <!-- Links Section -->
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h3>Hizmetler</h3>
+                    <ul>
+                        <li><a href="#services">Cybersecurity</a></li>
+                        <li><a href="#services">Web Development</a></li>
+                        <li><a href="#services">Penetration Testing</a></li>
+                        <li><a href="#services">Linux Administration</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Projeler</h3>
+                    <ul id="footer-projects">
+                        <!-- Footer projects will be loaded dynamically -->
+                    </ul>
+                </div>
+                
+
+                
+                <div class="footer-column">
+                    <h3>Medya</h3>
+                    <ul id="footer-social-links">
+                        <!-- Social links will be loaded dynamically -->
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Platformlar</h3>
+                    <ul id="footer-platform-links">
+                        <!-- Platform links will be loaded dynamically -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Copyright Section -->
+        <div class="footer-copyright-section">
+            <p class="footer-copyright">
+                © <span id="current-year">2025</span> GlitchIdea. Tüm hakları saklıdır.
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Update current year
+document.getElementById('current-year').textContent = new Date().getFullYear();
+
+// Load footer projects
+async function loadFooterProjects() {
+    try {
+        const response = await fetch('/api/footer-projects');
+        const data = await response.json();
+        
+        const footerProjectsContainer = document.getElementById('footer-projects');
+        
+        if (data.projects && data.projects.length > 0) {
+            footerProjectsContainer.innerHTML = data.projects
+                .map(project => `<li><a href="#projects">${project.title}</a></li>`)
+                .join('');
+        } else {
+            footerProjectsContainer.innerHTML = '<li><a href="#projects">Projeler yükleniyor...</a></li>';
+        }
+    } catch (error) {
+        console.error('Error loading footer projects:', error);
+        const footerProjectsContainer = document.getElementById('footer-projects');
+        footerProjectsContainer.innerHTML = '<li><a href="#projects">Projeler yüklenemedi</a></li>';
+    }
+}
+
+// Load footer social links
+async function loadFooterSocialLinks() {
+    try {
+        const response = await fetch('/api/social');
+        const data = await response.json();
+        
+        const footerSocialContainer = document.getElementById('footer-social-links');
+        const footerPlatformContainer = document.getElementById('footer-platform-links');
+        
+        if (data.social_links && data.social_links.length > 0) {
+            // Filter social media links
+            const socialLinks = data.social_links.filter(link => link.type === 'social');
+            const platformLinks = data.social_links.filter(link => link.type === 'platform');
+            
+            // Render social media links
+            if (socialLinks.length > 0) {
+                footerSocialContainer.innerHTML = socialLinks
+                    .map(link => {
+                        if (link.url && link.url.trim() !== '') {
+                            // Active social link with URL
+                            return `
+                                <li>
+                                    <a href="${link.url}" target="_blank" class="social-link active" title="${link.name}">
+                                        <i class="${link.icon}"></i>
+                                        ${link.name}
+                                    </a>
+                                </li>
+                            `;
+                        } else {
+                            // Inactive social link without URL
+                            return `
+                                <li>
+                                    <span class="social-link inactive" title="${link.name} - Şuanlık aktif değil">
+                                        <i class="${link.icon}"></i>
+                                        ${link.name}
+                                        <span class="inactive-badge">şuanlık aktif değil</span>
+                                    </span>
+                                </li>
+                            `;
+                        }
+                    })
+                    .join('');
+            } else {
+                footerSocialContainer.innerHTML = '<li><span>Sosyal medya linkleri yükleniyor...</span></li>';
+            }
+            
+            // Render platform links
+            if (platformLinks.length > 0) {
+                footerPlatformContainer.innerHTML = platformLinks
+                    .map(link => {
+                        if (link.url && link.url.trim() !== '') {
+                            // Active platform with URL
+                            return `
+                                <li>
+                                    <a href="${link.url}" target="_blank" class="platform-link active" title="${link.name}">
+                                        <i class="${link.icon}"></i>
+                                        ${link.name}
+                                    </a>
+                                </li>
+                            `;
+                        } else {
+                            // Inactive platform without URL
+                            return `
+                                <li>
+                                    <span class="platform-link inactive" title="${link.name} - Şuanlık aktif değil">
+                                        <i class="${link.icon}"></i>
+                                        ${link.name}
+                                        <span class="inactive-badge">şuanlık aktif değil</span>
+                                    </span>
+                                </li>
+                            `;
+                        }
+                    })
+                    .join('');
+            } else {
+                footerPlatformContainer.innerHTML = '<li><span>Platform linkleri yükleniyor...</span></li>';
+            }
+        } else {
+            footerSocialContainer.innerHTML = '<li><span>Sosyal medya linkleri yükleniyor...</span></li>';
+            footerPlatformContainer.innerHTML = '<li><span>Platform linkleri yükleniyor...</span></li>';
+        }
+    } catch (error) {
+        console.error('Error loading footer social links:', error);
+        const footerSocialContainer = document.getElementById('footer-social-links');
+        const footerPlatformContainer = document.getElementById('footer-platform-links');
+        footerSocialContainer.innerHTML = '<li><span>Sosyal medya linkleri yüklenemedi</span></li>';
+        footerPlatformContainer.innerHTML = '<li><span>Platform linkleri yüklenemedi</span></li>';
+    }
+}
+
+// Load footer projects and social links when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadFooterProjects();
+    loadFooterSocialLinks();
+});
+</script>

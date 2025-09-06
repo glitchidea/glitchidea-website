@@ -1,0 +1,330 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - JSON Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-blog"></i> Blog Yönetimi
+                </h3>
+                <button class="btn btn-light" onclick="showAddModal()">
+                    <i class="fas fa-plus"></i> Yeni Blog Yazısı
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="blogList">
+                    <!-- Blog yazıları buraya yüklenecek -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Blog Modal -->
+<div class="modal fade" id="blogModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Yeni Blog Yazısı Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="blogForm">
+                    <input type="hidden" id="blogId" name="id">
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Başlık *</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Kategori</label>
+                                <select class="form-select" id="category" name="category">
+                                    <option value="">Kategori Seçin</option>
+                                    <option value="Güvenlik">Güvenlik</option>
+                                    <option value="Python">Python</option>
+                                    <option value="Web Geliştirme">Web Geliştirme</option>
+                                    <option value="Linux">Linux</option>
+                                    <option value="Tutorial">Tutorial</option>
+                                    <option value="Teknoloji">Teknoloji</option>
+                                    <option value="Genel">Genel</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="excerpt" class="form-label">Özet</label>
+                        <textarea class="form-control" id="excerpt" name="excerpt" rows="2" 
+                                  placeholder="Blog yazısının kısa özeti"></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Tarih</label>
+                                <input type="date" class="form-control" id="date" name="date" 
+                                       value="${new Date().toISOString().split('T')[0]}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="readTime" class="form-label">Okuma Süresi</label>
+                                <input type="text" class="form-control" id="readTime" name="readTime" 
+                                       placeholder="8 dk">
+                                <div class="form-text">Tahmini okuma süresi</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Görsel</label>
+                        <input type="text" class="form-control" id="image" name="image" 
+                               placeholder="/images/blog/owasp-top10.jpg">
+                        <div class="form-text">Blog görselinin dosya yolu</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="url" class="form-label">URL</label>
+                        <input type="url" class="form-control" id="url" name="url" 
+                               placeholder="https://medium.com/@glitchidea/blog-post">
+                        <div class="form-text">Blog yazısının tam URL'si</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="featured" name="featured">
+                            <label class="form-check-label" for="featured">
+                                Öne Çıkan
+                            </label>
+                        </div>
+                        <div class="form-text">Bu blog yazısını öne çıkan olarak işaretle</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-warning" onclick="saveBlog()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Blog Yazısı Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bu blog yazısını silmek istediğinizden emin misiniz?</p>
+                <p class="text-danger"><strong>Bu işlem geri alınamaz!</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentBlogId = null;
+let blogData = {{ data | tojson | safe }};
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadBlog();
+});
+
+function loadBlog() {
+    fetch('/api/blog')
+        .then(response => response.json())
+        .then(data => {
+            blogData = data;
+            renderBlog();
+        })
+        .catch(error => {
+            showAlert('danger', 'Blog yazıları yüklenirken hata oluştu: ' + error.message);
+        });
+}
+
+function renderBlog() {
+    const container = document.getElementById('blogList');
+    const posts = blogData.posts || [];
+    
+    if (posts.length === 0) {
+        container.innerHTML = '<div class="text-center text-muted"><p>Henüz blog yazısı eklenmemiş.</p></div>';
+        return;
+    }
+    
+    container.innerHTML = posts.map(post => `
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="card-title">
+                            <i class="fas fa-blog"></i>
+                            ${post.title}
+                        </h5>
+                        ${post.excerpt ? `<p class="card-text text-muted">${post.excerpt}</p>` : ''}
+                        <div class="mb-2">
+                            ${post.category ? `<span class="badge bg-warning text-dark">${post.category}</span>` : ''}
+                            ${post.featured ? '<span class="badge bg-danger">Öne Çıkan</span>' : ''}
+                            ${post.date ? `<span class="badge bg-info">${formatDate(post.date)}</span>` : ''}
+                        </div>
+                        ${post.readTime ? `<small class="text-muted">Okuma Süresi: ${post.readTime}</small>` : ''}
+                        ${post.url ? `
+                            <div class="mb-2">
+                                <a href="${post.url}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-external-link-alt"></i> Oku
+                                </a>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="btn btn-outline-warning btn-sm mb-2" onclick="editBlog('${post.id}')">
+                            <i class="fas fa-edit"></i> Düzenle
+                        </button>
+                        <br>
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteBlog('${post.id}')">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    `).join('');
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('tr-TR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+function showAddModal() {
+    currentBlogId = null;
+    document.getElementById('modalTitle').textContent = 'Yeni Blog Yazısı Ekle';
+    document.getElementById('blogForm').reset();
+    
+    // Bugünün tarihini varsayılan olarak ayarla
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date').value = today;
+    
+    const modal = new bootstrap.Modal(document.getElementById('blogModal'));
+    modal.show();
+}
+
+function editBlog(id) {
+    const post = blogData.posts.find(p => String(p.id) === String(id));
+    if (!post) return;
+    
+    currentBlogId = id;
+    document.getElementById('modalTitle').textContent = 'Blog Yazısı Düzenle';
+    
+    // Form alanlarını doldur
+    document.getElementById('blogId').value = post.id;
+    document.getElementById('title').value = post.title || '';
+    document.getElementById('excerpt').value = post.excerpt || '';
+    document.getElementById('category').value = post.category || '';
+    document.getElementById('date').value = post.date || '';
+    document.getElementById('readTime').value = post.readTime || '';
+    document.getElementById('image').value = post.image || '';
+    document.getElementById('url').value = post.url || '';
+    document.getElementById('featured').checked = post.featured === true;
+    
+    const modal = new bootstrap.Modal(document.getElementById('blogModal'));
+    modal.show();
+}
+
+function saveBlog() {
+    const formData = new FormData(document.getElementById('blogForm'));
+    const data = {};
+    
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    
+    // Featured checkbox değerini ekle
+    data.featured = document.getElementById('featured').checked;
+    
+    const method = currentBlogId ? 'PUT' : 'POST';
+    const url = '/api/blog';
+    
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert('success', result.message);
+            bootstrap.Modal.getInstance(document.getElementById('blogModal')).hide();
+            loadBlog();
+        } else {
+            showAlert('danger', result.message);
+        }
+    })
+    .catch(error => {
+        showAlert('danger', 'Bir hata oluştu: ' + error.message);
+    });
+}
+
+function deleteBlog(id) {
+    currentBlogId = id;
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+
+function confirmDelete() {
+    fetch(`/api/blog?id=${currentBlogId}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert('success', result.message);
+            bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+            loadBlog();
+        } else {
+            showAlert('danger', result.message);
+        }
+    })
+    .catch(error => {
+        showAlert('danger', 'Bir hata oluştu: ' + error.message);
+    });
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.querySelector('main').insertBefore(alertDiv, document.querySelector('main').firstChild);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

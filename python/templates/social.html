@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+
+{% block title %}Sosyal Medya - JSON Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-share-alt"></i> Sosyal Medya Yönetimi
+                </h3>
+                <button class="btn btn-light" onclick="showAddModal()">
+                    <i class="fas fa-plus"></i> Yeni Sosyal Medya
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="socialList">
+                    <!-- Sosyal medya linkleri buraya yüklenecek -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Social Modal -->
+<div class="modal fade" id="socialModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Yeni Sosyal Medya Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="socialForm">
+                    <input type="hidden" id="socialId" name="id">
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Platform Adı *</label>
+                        <input type="text" class="form-control" id="name" name="name" required 
+                               placeholder="GitHub, Twitter, Medium, vb.">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="url" class="form-label">URL *</label>
+                        <input type="url" class="form-control" id="url" name="url" required 
+                               placeholder="https://example.com">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="icon" class="form-label">İkon</label>
+                        <input type="text" class="form-control" id="icon" name="icon" 
+                               placeholder="fab fa-github">
+                        <div class="form-text">Font Awesome ikon sınıfı (opsiyonel)</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Tip</label>
+                        <select class="form-select" id="type" name="type">
+                            <option value="social">Sosyal Medya</option>
+                            <option value="platform">Platform</option>
+                        </select>
+                        <div class="form-text">Link tipini seçin</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-info" onclick="saveSocial()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sosyal Medya Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bu sosyal medya linkini silmek istediğinizden emin misiniz?</p>
+                <p class="text-danger"><strong>Bu işlem geri alınamaz!</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentSocialId = null;
+let socialData = {{ data | tojson | safe }};
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadSocial();
+});
+
+function loadSocial() {
+    fetch('/api/social')
+        .then(response => response.json())
+        .then(data => {
+            socialData = data;
+            renderSocial();
+        })
+        .catch(error => {
+            showAlert('danger', 'Sosyal medya linkleri yüklenirken hata oluştu: ' + error.message);
+        });
+}
+
+function renderSocial() {
+    const container = document.getElementById('socialList');
+    const socialLinks = socialData.social_links || [];
+    
+    if (socialLinks.length === 0) {
+        container.innerHTML = '<div class="text-center text-muted"><p>Henüz sosyal medya linki eklenmemiş.</p></div>';
+        return;
+    }
+    
+    container.innerHTML = socialLinks.map(social => `
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center">
+                            <i class="${social.icon || getDefaultIcon(social.name)} fa-2x me-3 text-info"></i>
+                            <div>
+                                <h5 class="card-title mb-1">${social.name}</h5>
+                                <p class="card-text mb-1">
+                                    <a href="${social.url}" target="_blank" class="text-decoration-none">
+                                        ${social.url}
+                                    </a>
+                                </p>
+                                <span class="badge bg-info">${social.type}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="btn btn-outline-info btn-sm mb-2" onclick="editSocial('${social.id}')">
+                            <i class="fas fa-edit"></i> Düzenle
+                        </button>
+                        <br>
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteSocial('${social.id}')">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getDefaultIcon(platform) {
+    const icons = {
+        'GitHub': 'fab fa-github',
+        'LinkedIn': 'fab fa-linkedin',
+        'Twitter': 'fab fa-twitter',
+        'Instagram': 'fab fa-instagram',
+        'Facebook': 'fab fa-facebook',
+        'YouTube': 'fab fa-youtube',
+        'Medium': 'fab fa-medium',
+        'Dev.to': 'fab fa-dev',
+        'Stack Overflow': 'fab fa-stack-overflow',
+        'Reddit': 'fab fa-reddit',
+        'Discord': 'fab fa-discord',
+        'Telegram': 'fab fa-telegram',
+        'WhatsApp': 'fab fa-whatsapp',
+        'Email': 'fas fa-envelope',
+        'Website': 'fas fa-globe',
+        'Blog': 'fas fa-blog',
+        'Portfolio': 'fas fa-briefcase'
+    };
+    return icons[platform] || 'fas fa-link';
+}
+
+function showAddModal() {
+    currentSocialId = null;
+    document.getElementById('modalTitle').textContent = 'Yeni Sosyal Medya Ekle';
+    document.getElementById('socialForm').reset();
+    
+    const modal = new bootstrap.Modal(document.getElementById('socialModal'));
+    modal.show();
+}
+
+function editSocial(id) {
+    const social = socialData.social_links.find(s => String(s.id) === String(id));
+    if (!social) return;
+    
+    currentSocialId = id;
+    document.getElementById('modalTitle').textContent = 'Sosyal Medya Düzenle';
+    
+    // Form alanlarını doldur
+    document.getElementById('socialId').value = social.id;
+    document.getElementById('name').value = social.name || '';
+    document.getElementById('url').value = social.url || '';
+    document.getElementById('icon').value = social.icon || '';
+    document.getElementById('type').value = social.type || 'social';
+    
+    const modal = new bootstrap.Modal(document.getElementById('socialModal'));
+    modal.show();
+}
+
+function saveSocial() {
+    const formData = new FormData(document.getElementById('socialForm'));
+    const data = {};
+    
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    
+    const method = currentSocialId ? 'PUT' : 'POST';
+    const url = '/api/social';
+    
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert('success', result.message);
+            bootstrap.Modal.getInstance(document.getElementById('socialModal')).hide();
+            loadSocial();
+        } else {
+            showAlert('danger', result.message);
+        }
+    })
+    .catch(error => {
+        showAlert('danger', 'Bir hata oluştu: ' + error.message);
+    });
+}
+
+function deleteSocial(id) {
+    currentSocialId = id;
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+
+function confirmDelete() {
+    fetch(`/api/social?id=${currentSocialId}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert('success', result.message);
+            bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+            loadSocial();
+        } else {
+            showAlert('danger', result.message);
+        }
+    })
+    .catch(error => {
+        showAlert('danger', 'Bir hata oluştu: ' + error.message);
+    });
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.querySelector('main').insertBefore(alertDiv, document.querySelector('main').firstChild);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

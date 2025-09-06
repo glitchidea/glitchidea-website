@@ -1,0 +1,108 @@
+{
+  "projects": [
+    {
+      "id": "1",
+      "title": "Linux Security Toolkit",
+      "repo": "github.com/glitchidea/linux-security-toolkit",
+      "tech": "Bash, Python, Ansible, Docker, Kubernetes",
+      "status": "Active",
+      "category": "Linux"
+    },
+    {
+      "id": "2",
+      "title": "Linux Security Monitor",
+      "repo": "github.com/glitchidea/linux-security-monitor",
+      "tech": "Python, Systemd, SQLite, Linux APIs",
+      "status": "Active",
+      "category": "Linux"
+    },
+    {
+      "id": "3",
+      "title": "Network Security Scanner",
+      "repo": "github.com/glitchidea/network-security-scanner",
+      "tech": "Python, Nmap, Scapy, SQLite, Flask",
+      "status": "Active",
+      "category": "Linux"
+    },
+    {
+      "id": "4",
+      "title": "CyberGuard Mobile",
+      "repo": "github.com/glitchidea/cyberguard-mobile",
+      "tech": "React Native, Node.js, MongoDB, AWS, Firebase",
+      "status": "Active",
+      "category": "Mobile"
+    },
+    {
+      "id": "5",
+      "title": "HackTracker Mobile",
+      "repo": "github.com/glitchidea/hacktracker-mobile",
+      "tech": "React Native, Firebase, Redux, TypeScript",
+      "status": "Active",
+      "category": "Mobile"
+    },
+    {
+      "id": "6",
+      "title": "SecureNotes Pro",
+      "repo": "github.com/glitchidea/securenotes-pro",
+      "tech": "Flutter, Dart, SQLite, AES-256, Biometric",
+      "status": "Active",
+      "category": "Mobile"
+    },
+    {
+      "id": "7",
+      "title": "SecureMail Pro",
+      "repo": "github.com/glitchidea/securemail-pro",
+      "tech": "Python, Django, PostgreSQL, Redis, Docker",
+      "status": "Active",
+      "category": "SaaS"
+    },
+    {
+      "id": "8",
+      "title": "DevSecOps Platform",
+      "repo": "github.com/glitchidea/devsecops-platform",
+      "tech": "Go, React, PostgreSQL, Kubernetes, Jenkins",
+      "status": "Active",
+      "category": "SaaS"
+    },
+    {
+      "id": "9",
+      "title": "CyberTask Manager",
+      "repo": "github.com/glitchidea/cybertask-manager",
+      "tech": "React, Node.js, MongoDB, AWS, Socket.io",
+      "status": "Active",
+      "category": "SaaS"
+    },
+    {
+      "id": "10",
+      "title": "PenTest Suite",
+      "repo": "github.com/glitchidea/pentest-suite",
+      "tech": "Python, Flask, SQLite, Nmap, Metasploit",
+      "status": "Active",
+      "category": "Security"
+    },
+    {
+      "id": "11",
+      "title": "Threat Intelligence Hub",
+      "repo": "github.com/glitchidea/threat-intelligence-hub",
+      "tech": "Python, FastAPI, Elasticsearch, TensorFlow, Redis",
+      "status": "Active",
+      "category": "Security"
+    },
+    {
+      "id": "12",
+      "title": "WebGuard Firewall",
+      "repo": "github.com/glitchidea/webguard-firewall",
+      "tech": "Python, Flask, TensorFlow, Docker, Nginx",
+      "status": "Active",
+      "category": "Security"
+    },
+    {
+      "id": "13",
+      "title": "SecureNet Scanner",
+      "repo": "github.com/glitchidea/securenet-scanner",
+      "tech": "Python, Django, PostgreSQL, Redis, Celery",
+      "status": "Active",
+      "category": "Security"
+    }
+  ]
+}

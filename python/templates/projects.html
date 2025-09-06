@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+
+{% block title %}Projeler - JSON Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-project-diagram"></i> Projeler Yönetimi
+                </h3>
+                <button class="btn btn-light" onclick="showAddModal()">
+                    <i class="fas fa-plus"></i> Yeni Proje
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="projectsList">
+                    <!-- Projeler buraya yüklenecek -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Project Modal -->
+<div class="modal fade" id="projectModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Yeni Proje Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="projectForm">
+                    <input type="hidden" id="projectId" name="id">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Proje Adı *</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Kategori *</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Kategori Seçin</option>
+                                    <option value="Linux">Linux</option>
+                                    <option value="Mobile">Mobile</option>
+                                    <option value="SaaS">SaaS</option>
+                                    <option value="Security">Security</option>
+                                    <option value="Web">Web</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="repo" class="form-label">Repository URL</label>
+                                <input type="text" class="form-control" id="repo" name="repo" 
+                                       placeholder="github.com/user/repo">
+                                <div class="form-text">Repository URL'si (örn: github.com/glitchidea/project)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Durum</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="Active">Active</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="tech" class="form-label">Teknolojiler</label>
+                        <input type="text" class="form-control" id="tech" name="tech" 
+                               placeholder="Python, Flask, JavaScript, HTML, CSS">
+                        <div class="form-text">Virgülle ayırarak teknolojileri yazın</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-success" onclick="saveProject()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Proje Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bu projeyi silmek istediğinizden emin misiniz?</p>
+                <p class="text-danger"><strong>Bu işlem geri alınamaz!</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentProjectId = null;
+let projectsData = {{ data | tojson | safe }};
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadProjects();
+});
+
+function loadProjects() {
+    fetch('/api/projects')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Loaded projects data:', data);
+            projectsData = data;
+            renderProjects();
+        })
+        .catch(error => {
+            console.error('Error loading projects:', error);
+            showAlert('danger', 'Projeler yüklenirken hata oluştu: ' + error.message);
+        });
+}
+
+function renderProjects() {
+    const container = document.getElementById('projectsList');
+    console.log('Rendering projects with data:', projectsData);
+    
+    const projects = projectsData.projects || [];
+    console.log('Projects array:', projects);
+    
+    if (projects.length === 0) {
+        container.innerHTML = '<div class="text-center text-muted"><p>Henüz proje eklenmemiş.</p></div>';
+        return;
+    }
+    
+    container.innerHTML = projects.map(project => `
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="card-title">
+                            <i class="fas fa-project-diagram"></i>
+                            ${project.title}
+                        </h5>
+                        <div class="mb-2">
+                            <span class="badge bg-success">${project.category}</span>
+                            <span class="badge bg-info">${project.status}</span>
+                            ${project.tech ? `<span class="badge bg-secondary">${project.tech}</span>` : ''}
+                        </div>
+                        <div class="mb-2">
+                            ${project.repo ? `
+                                <a href="https://${project.repo}" target="_blank" class="btn btn-outline-primary btn-sm me-2">
+                                    <i class="fab fa-github"></i> Repository
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="btn btn-outline-success btn-sm mb-2" onclick="editProject('${project.id}')">
+                            <i class="fas fa-edit"></i> Düzenle
+                        </button>
+                        <br>
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteProject('${project.id}')">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function showAddModal() {
+    currentProjectId = null;
+    document.getElementById('modalTitle').textContent = 'Yeni Proje Ekle';
+    document.getElementById('projectForm').reset();
+    
+    const modal = new bootstrap.Modal(document.getElementById('projectModal'));
+    modal.show();
+}
+
+function editProject(id) {
+    console.log('Edit project called with ID:', id);
+    console.log('Projects data:', projectsData);
+    
+    // Convert id to string for comparison since JSON might have string IDs
+    const project = projectsData.projects.find(p => String(p.id) === String(id));
+    console.log('Found project:', project);
+    
+    if (!project) {
+        console.error('Project not found with ID:', id);
+        showAlert('danger', 'Proje bulunamadı!');
+        return;
+    }
+    
+    currentProjectId = id;
+    document.getElementById('modalTitle').textContent = 'Proje Düzenle';
+    
+    // Form alanlarını doldur
+    document.getElementById('projectId').value = project.id;
+    document.getElementById('title').value = project.title || '';
+    document.getElementById('category').value = project.category || '';
+    document.getElementById('repo').value = project.repo || '';
+    document.getElementById('status').value = project.status || 'Active';
+    document.getElementById('tech').value = project.tech || '';
+    
+    const modal = new bootstrap.Modal(document.getElementById('projectModal'));
+    modal.show();
+}
+
+function saveProject() {
+    const formData = new FormData(document.getElementById('projectForm'));
+    const data = {};
+    
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    
+    const method = currentProjectId ? 'PUT' : 'POST';
+    const url = '/api/projects';
+    
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert('success', result.message);
+            bootstrap.Modal.getInstance(document.getElementById('projectModal')).hide();
+            loadProjects();
+        } else {
+            showAlert('danger', result.message);
+        }
+    })
+    .catch(error => {
+        showAlert('danger', 'Bir hata oluştu: ' + error.message);
+    });
+}
+
+function deleteProject(id) {
+    console.log('Delete project called with ID:', id);
+    currentProjectId = id;
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+
+function confirmDelete() {
+    fetch(`/api/projects?id=${currentProjectId}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert('success', result.message);
+            bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+            loadProjects();
+        } else {
+            showAlert('danger', result.message);
+        }
+    })
+    .catch(error => {
+        showAlert('danger', 'Bir hata oluştu: ' + error.message);
+    });
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.querySelector('main').insertBefore(alertDiv, document.querySelector('main').firstChild);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

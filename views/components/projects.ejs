@@ -1,0 +1,82 @@
+<!-- Projects Section -->
+<section id="projects" class="section">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Projelerim</h2>
+        
+        <div class="projects-container">
+            <!-- Project Filters and Controls -->
+            <div class="projects-controls" data-aos="fade-up" data-aos-delay="100">
+                <div class="filters-group">
+                    <select id="category-filter" class="filter-input">
+                        <option value="">Tüm Kategoriler</option>
+                        <option value="Linux">Linux</option>
+                        <option value="Mobile">Mobile</option>
+                        <option value="SaaS">SaaS</option>
+                        <option value="Security">Security</option>
+                    </select>
+                    <input type="text" id="tech-filter" class="filter-input" placeholder="Teknoloji ile filtrele...">
+                    <input type="text" id="status-filter" class="filter-input" placeholder="Durum ile filtrele...">
+                </div>
+                
+                <div class="view-dropdown">
+                    <button class="dropdown-btn" id="view-toggle">
+                        <i class="fas fa-eye"></i>
+                        <span>Görünüm</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="view-menu">
+                        <div class="view-option" data-view="table">
+                            <i class="fas fa-table"></i>
+                            <span>Tablo Görünümü</span>
+                        </div>
+                        <div class="view-option" data-view="list">
+                            <i class="fas fa-list"></i>
+                            <span>Liste Görünümü</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Projects Table -->
+            <div class="projects-table-container" data-aos="fade-up" data-aos-delay="200">
+                <table class="projects-table">
+                    <thead>
+                        <tr>
+                            <th class="column-project">Proje</th>
+                            <th class="column-repository">Repository</th>
+                            <th class="column-tech">Teknoloji</th>
+                            <th class="column-category">Kategori</th>
+                            <th class="column-status">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projects-table-body">
+                        <!-- Project rows will be loaded dynamically -->
+                    </tbody>
+                </table>
+                
+                <!-- Load More Button -->
+                <div class="load-more-container" id="load-more-container">
+                    <button class="load-more-btn" id="load-more-btn">
+                        <i class="fas fa-ellipsis-h"></i>
+                        <span>Daha Fazla Göster</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Projects List -->
+            <div class="projects-list-container" data-aos="fade-up" data-aos-delay="200" id="projects-list-container">
+                <div id="projects-list-body">
+                    <!-- Project list items will be loaded dynamically -->
+                </div>
+                
+                <!-- Load More Button for List -->
+                <div class="load-more-container" id="load-more-container-list">
+                    <button class="load-more-btn" id="load-more-btn-list">
+                        <i class="fas fa-ellipsis-h"></i>
+                        <span>Daha Fazla Göster</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

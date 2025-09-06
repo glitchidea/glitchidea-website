@@ -1,0 +1,67 @@
+{
+  "social_links": [
+    {
+      "id": 1,
+      "name": "github",
+      "url": "github.com/glitchidea",
+      "icon": "fab fa-github",
+      "type": "social"
+    },
+    {
+      "id": 2,
+      "name": "Twitter",
+      "url": "https://x.com/glitchidea",
+      "icon": "fab fa-twitter",
+      "type": "social"
+    },
+    {
+      "id": 3,
+      "name": "Medium",
+      "url": "https://medium.com/@glitchidea",
+      "icon": "fab fa-medium-m",
+      "type": "social"
+    },
+    {
+      "id": 4,
+      "name": "YouTube",
+      "url": "https://www.youtube.com/@Glitchidea",
+      "icon": "fab fa-youtube",
+      "type": "social"
+    },
+    {
+      "id": 5,
+      "name": "YesWeHack",
+      "url": "",
+      "icon": "fas fa-bug",
+      "type": "platform"
+    },
+    {
+      "id": 6,
+      "name": "Bugcrowd",
+      "url": "",
+      "icon": "fas fa-shield-alt",
+      "type": "platform"
+    },
+    {
+      "id": 7,
+      "name": "HackerOne",
+      "url": "",
+      "icon": "fas fa-user-secret",
+      "type": "platform"
+    },
+    {
+      "id": 8,
+      "name": "TryHackMe",
+      "url": "",
+      "icon": "fas fa-terminal",
+      "type": "platform"
+    },
+    {
+      "id": 9,
+      "name": "Email",
+      "url": "glitchidea65@gmail.com",
+      "icon": "fas fa-envelope",
+      "type": "contact"
+    }
+  ]
+}

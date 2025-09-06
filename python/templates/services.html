@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+
+{% block title %}Hizmetler - JSON Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-cogs"></i> Hizmetler Yönetimi
+                </h3>
+                <button class="btn btn-light" onclick="showAddModal()">
+                    <i class="fas fa-plus"></i> Yeni Hizmet
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="servicesList">
+                    <!-- Hizmetler buraya yüklenecek -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Service Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Yeni Hizmet Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="serviceForm">
+                    <input type="hidden" id="serviceId" name="id">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Başlık *</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Kategori *</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Kategori Seçin</option>
+                                    <option value="pentest">Penetrasyon Test</option>
+                                    <option value="development">Geliştirme</option>
+                                    <option value="consulting">Danışmanlık</option>
+                                    <option value="security">Güvenlik</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Açıklama *</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="icon" class="form-label">İkon</label>
+                        <input type="text" class="form-control" id="icon" name="icon" 
+                               placeholder="fas fa-cogs" value="fas fa-cogs">
+                        <div class="form-text">Font Awesome ikon sınıfı</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Özellikler</label>
+                        <div id="featuresContainer">
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control feature-input" placeholder="Özellik adı">
+                                <button type="button" class="btn btn-outline-danger" onclick="removeFeature(this)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addFeature()">
+                            <i class="fas fa-plus"></i> Özellik Ekle
+                        </button>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Teslim Edilecekler</label>
+                        <div id="deliverablesContainer">
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control deliverable-input" placeholder="Teslim edilecek">
+                                <button type="button" class="btn btn-outline-danger" onclick="removeDeliverable(this)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDeliverable()">
+                            <i class="fas fa-plus"></i> Teslim Edilecek Ekle
+                        </button>
+                    </div>
+                    
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" onclick="saveService()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Hizmet Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bu hizmeti silmek istediğinizden emin misiniz?</p>
+                <p class="text-danger"><strong>Bu işlem geri alınamaz!</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentServiceId = null;
+let servicesData = {{ data | tojson | safe }};
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadServices();
+});
+
+function loadServices() {
+    fetch('/api/services')
+        .then(response => response.json())
+        .then(data => {
+            servicesData = data;
+            renderServices();
+        })
+        .catch(error => {
+            showAlert('danger', 'Hizmetler yüklenirken hata oluştu: ' + error.message);
+        });
+}
+
+function renderServices() {
+    const container = document.getElementById('servicesList');
+    const services = servicesData.services || [];
+    
+    if (services.length === 0) {
+        container.innerHTML = '<div class="text-center text-muted"><p>Henüz hizmet eklenmemiş.</p></div>';
+        return;
+    }
+    
+    container.innerHTML = services.map(service => `
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="card-title">
+                            <i class="${service.icon || 'fas fa-cogs'}"></i>
+                            ${service.title}
+                        </h5>
+                        <p class="card-text">${service.description}</p>
+                        <div class="mb-2">
+                            <span class="badge bg-primary">${service.category}</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Özellikler:</strong>
+                            <ul class="list-unstyled">
+                                ${(service.features || []).map(feature => `<li><i class="fas fa-check text-success"></i> ${feature}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>Teslim Edilecekler:</strong>
+                            <ul class="list-unstyled">
+                                ${(service.deliverables || []).map(deliverable => `<li><i class="fas fa-arrow-right text-primary"></i> ${deliverable}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="btn btn-outline-primary btn-sm mb-2" onclick="editService(${service.id})">
+                            <i class="fas fa-edit"></i> Düzenle
+                        </button>
+                        <br>
+                        <button class="btn btn-outline-danger btn-sm" onclick="deleteService(${service.id})">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function showAddModal() {
+    currentServiceId = null;
+    document.getElementById('modalTitle').textContent = 'Yeni Hizmet Ekle';
+    document.getElementById('serviceForm').reset();
+    clearDynamicFields();
+    addFeature();
+    addDeliverable();
+    
+    const modal = new bootstrap.Modal(document.getElementById('serviceModal'));
+    modal.show();
+}
+
+function editService(id) {
+    const service = servicesData.services.find(s => s.id === id);
+    if (!service) return;
+    
+    currentServiceId = id;
+    document.getElementById('modalTitle').textContent = 'Hizmet Düzenle';
+    
+    // Form alanlarını doldur
+    document.getElementById('serviceId').value = service.id;
+    document.getElementById('title').value = service.title;
+    document.getElementById('description').value = service.description;
+    document.getElementById('category').value = service.category;
+    document.getElementById('icon').value = service.icon || '';
+    
+    // Dinamik alanları doldur
+    clearDynamicFields();
+    
+    (service.features || []).forEach(feature => {
+        addFeature(feature);
+    });
+    
+    (service.deliverables || []).forEach(deliverable => {
+        addDeliverable(deliverable);
+    });
+    
+    const modal = new bootstrap.Modal(document.getElementById('serviceModal'));
+    modal.show();
+}
+
+function saveService() {
+    const formData = new FormData(document.getElementById('serviceForm'));
+    const data = {};
+    
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    
+    // Dinamik alanları ekle
+    data.features = Array.from(document.querySelectorAll('.feature-input')).map(input => input.value).filter(v => v.trim());
+    data.deliverables = Array.from(document.querySelectorAll('.deliverable-input')).map(input => input.value).filter(v => v.trim());
+    
+    const method = currentServiceId ? 'PUT' : 'POST';
+    const url = '/api/services';
+    
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert('success', result.message);
+            bootstrap.Modal.getInstance(document.getElementById('serviceModal')).hide();
+            loadServices();
+        } else {
+            showAlert('danger', result.message);
+        }
+    })
+    .catch(error => {
+        showAlert('danger', 'Bir hata oluştu: ' + error.message);
+    });
+}
+
+function deleteService(id) {
+    currentServiceId = id;
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+
+function confirmDelete() {
+    fetch(`/api/services?id=${currentServiceId}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert('success', result.message);
+            bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+            loadServices();
+        } else {
+            showAlert('danger', result.message);
+        }
+    })
+    .catch(error => {
+        showAlert('danger', 'Bir hata oluştu: ' + error.message);
+    });
+}
+
+function addFeature(value = '') {
+    const container = document.getElementById('featuresContainer');
+    const div = document.createElement('div');
+    div.className = 'input-group mb-2';
+    div.innerHTML = `
+        <input type="text" class="form-control feature-input" placeholder="Özellik adı" value="${value}">
+        <button type="button" class="btn btn-outline-danger" onclick="removeFeature(this)">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+
+function removeFeature(button) {
+    button.parentElement.remove();
+}
+
+function addDeliverable(value = '') {
+    const container = document.getElementById('deliverablesContainer');
+    const div = document.createElement('div');
+    div.className = 'input-group mb-2';
+    div.innerHTML = `
+        <input type="text" class="form-control deliverable-input" placeholder="Teslim edilecek" value="${value}">
+        <button type="button" class="btn btn-outline-danger" onclick="removeDeliverable(this)">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+
+function removeDeliverable(button) {
+    button.parentElement.remove();
+}
+
+function clearDynamicFields() {
+    document.getElementById('featuresContainer').innerHTML = '';
+    document.getElementById('deliverablesContainer').innerHTML = '';
+}
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.querySelector('main').insertBefore(alertDiv, document.querySelector('main').firstChild);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}
