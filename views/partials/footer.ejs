@@ -68,7 +68,7 @@ document.getElementById('current-year').textContent = new Date().getFullYear();
 // Load footer projects
 async function loadFooterProjects() {
     try {
-        const response = await fetch('/api/footer-projects');
+        const response = await fetch('./api/projects.json');
         const data = await response.json();
         
         const footerProjectsContainer = document.getElementById('footer-projects');
@@ -90,7 +90,7 @@ async function loadFooterProjects() {
 // Load footer social links
 async function loadFooterSocialLinks() {
     try {
-        const response = await fetch('/api/social');
+        const response = await fetch('./api/social.json');
         const data = await response.json();
         
         const footerSocialContainer = document.getElementById('footer-social-links');
