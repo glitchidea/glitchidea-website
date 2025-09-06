@@ -30,7 +30,8 @@ const copyRecursive = (src, dest) => {
   }
 };
 
-copyRecursive('public', 'dist');
+// Note: public files should be manually copied to dist/ before running this script
+// or use: cp -r public/* dist/ (if public folder exists)
 
 // Load data files from dist/api (these should be manually maintained)
 console.log('📊 Loading data files...');

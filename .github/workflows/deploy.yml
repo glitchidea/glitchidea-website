@@ -31,7 +31,17 @@ jobs:
         run: npm ci
 
       - name: Build static site
-        run: npm run build:static
+        run: |
+          # Create dist directory
+          mkdir -p dist
+          
+          # Copy public files to dist (if public folder exists)
+          if [ -d "public" ]; then
+            cp -r public/* dist/
+          fi
+          
+          # Build static site
+          npm run build:static
 
       - name: Deploy to GitHub Pages
         run: |
