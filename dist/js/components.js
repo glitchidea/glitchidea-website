@@ -101,100 +101,13 @@ function createProjectCard(project) {
     return card;
 }
 
-// Load and display featured work experience
-async function loadFeaturedWork() {
-    try {
-        const response = await fetch('./api/work.json');
-        const data = await response.json();
-        
-        const featuredWorkCard = document.getElementById('featured-work-card');
-        if (featuredWorkCard && data.work_experience && data.work_experience.length > 0) {
-            // Get the first featured work or the first work experience
-            const work = data.work_experience.find(w => w.featured) || data.work_experience[0];
-            featuredWorkCard.innerHTML = createFeaturedWorkCard(work);
-        }
-    } catch (error) {
-        console.error('Error loading featured work:', error);
-    }
-}
+// Work functionality removed
 
-// Create featured work card
-function createFeaturedWorkCard(work) {
-    return `
-        <div class="work-category">${work.category.toUpperCase()}</div>
-        <div class="work-header">
-            <div>
-                <h3 class="work-title">${work.title}</h3>
-                <div class="work-company">${work.company} - ${work.client}</div>
-            </div>
-            <span class="work-period">${work.period}</span>
-        </div>
-        <p class="work-description">${work.description}</p>
-        <div class="work-achievements">
-            <h4>Achievements:</h4>
-            <ul>
-                ${work.achievements.map(achievement => `<li>${achievement}</li>`).join('')}
-            </ul>
-        </div>
-        <div class="work-technologies">
-            ${work.technologies.map(tech => `<span class="technology-tag">${tech}</span>`).join('')}
-        </div>
-    `;
-}
+// Work card function removed
 
-// Load and display all work experience (for modal)
-async function loadAllWork() {
-    try {
-        const response = await fetch('./api/work.json');
-        const data = await response.json();
-        
-        const allWorkTimeline = document.getElementById('all-work-timeline');
-        if (allWorkTimeline) {
-            allWorkTimeline.innerHTML = '';
-            
-            data.work_experience.forEach((work, index) => {
-                const timelineItem = createTimelineItem(work, index);
-                allWorkTimeline.appendChild(timelineItem);
-            });
-        }
-    } catch (error) {
-        console.error('Error loading all work:', error);
-    }
-}
+// All work function removed
 
-// Create timeline item element
-function createTimelineItem(work, index) {
-    const item = document.createElement('div');
-    item.className = 'timeline-item';
-    item.setAttribute('data-aos', index % 2 === 0 ? 'fade-right' : 'fade-left');
-    item.setAttribute('data-aos-delay', (index * 100).toString());
-    
-    item.innerHTML = `
-        <div class="timeline-dot"></div>
-        <div class="timeline-content">
-            <div class="timeline-header">
-                <h3 class="timeline-title">${work.title}</h3>
-                <span class="timeline-period">${work.period}</span>
-            </div>
-            <div class="timeline-company">
-                <strong>${work.company}</strong> - ${work.client}
-            </div>
-            <p class="timeline-description">${work.description}</p>
-            <div class="timeline-achievements">
-                <h4>Achievements:</h4>
-                <ul>
-                    ${work.achievements.map(achievement => `<li>${achievement}</li>`).join('')}
-                </ul>
-            </div>
-            <div class="timeline-technologies">
-                ${work.technologies.map(tech => `<span class="technology-tag">${tech}</span>`).join('')}
-            </div>
-            <div class="timeline-category">${work.category.toUpperCase()}</div>
-        </div>
-    `;
-    
-    return item;
-}
+// Timeline item function removed
 
 // Load and display blog posts
 async function loadBlogPosts() {
@@ -281,51 +194,14 @@ function initProjectsModal() {
     }
 }
 
-// Work Modal functionality
-function initWorkModal() {
-    const modal = document.getElementById('all-work-modal');
-    const openBtn = document.getElementById('view-all-work-btn');
-    const closeBtn = document.getElementById('close-work-modal');
-    
-    if (openBtn) {
-        openBtn.addEventListener('click', function() {
-            modal.classList.add('show');
-            loadAllWork();
-            document.body.style.overflow = 'hidden';
-        });
-    }
-    
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function() {
-            modal.classList.remove('show');
-            document.body.style.overflow = 'auto';
-        });
-    }
-    
-    // Close modal when clicking outside
-    if (modal) {
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                modal.classList.remove('show');
-                document.body.style.overflow = 'auto';
-            }
-        });
-    }
-}
 
 // Close modals with Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         const projectsModal = document.getElementById('all-projects-modal');
-        const workModal = document.getElementById('all-work-modal');
         
         if (projectsModal && projectsModal.classList.contains('show')) {
             projectsModal.classList.remove('show');
-            document.body.style.overflow = 'auto';
-        }
-        
-        if (workModal && workModal.classList.contains('show')) {
-            workModal.classList.remove('show');
             document.body.style.overflow = 'auto';
         }
     }
@@ -349,50 +225,6 @@ function initModalProjectFilters() {
     });
 }
 
-// Work filter functionality (for modal)
-function initModalWorkFilters() {
-    const filterButtons = document.querySelectorAll('#all-work-modal .filter-btn');
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const filter = this.getAttribute('data-filter');
-            
-            // Update active button
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Load filtered work in modal
-            loadFilteredWorkInModal(filter);
-        });
-    });
-}
-
-// Load filtered work in modal
-async function loadFilteredWorkInModal(category) {
-    try {
-        const url = category === 'all' ? '/api/all-work' : `/api/all-work?category=${category}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        const allWorkTimeline = document.getElementById('all-work-timeline');
-        if (allWorkTimeline) {
-            allWorkTimeline.innerHTML = '';
-            
-            const workItems = data.work_experience || [];
-            workItems.forEach((work, index) => {
-                const timelineItem = createTimelineItem(work, index);
-                allWorkTimeline.appendChild(timelineItem);
-            });
-        }
-        
-        // Reinitialize AOS for new elements
-        if (typeof AOS !== 'undefined') {
-            AOS.refresh();
-        }
-    } catch (error) {
-        console.error('Error loading filtered work in modal:', error);
-    }
-}
 
 // Load filtered projects in modal
 async function loadFilteredProjectsInModal(category) {
@@ -505,13 +337,10 @@ function showNotification(message, type = 'info') {
 document.addEventListener('DOMContentLoaded', function() {
     // Load dynamic content
     loadFeaturedProjects();
-    loadFeaturedWork();
     loadBlogPosts();
     
     // Initialize components
     initProjectsModal();
-    initWorkModal();
     initModalProjectFilters();
-    initModalWorkFilters();
     initContactForm();
 });
