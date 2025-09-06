@@ -176,7 +176,7 @@ app.get('/api/all-projects', (req, res) => {
 });
 
 app.get('/api/services', (req, res) => {
-  const services = require('./dist/api/services.json');
+  const services = require('./data/services.json');
   res.json(services);
 });
 
@@ -221,7 +221,7 @@ app.get('/api/all-work', (req, res) => {
 });
 
 app.get('/api/blog', (req, res) => {
-  const blog = require('./dist/api/blog.json');
+  const blog = require('./data/blog.json');
   res.json(blog);
 });
 

@@ -287,8 +287,8 @@
 .contact-animated .social-link:nth-child(4) { animation-delay: 0.7s; }
 
 .contact-animated .social-link:hover {
-    transform: translateY(-3px) scale(1.05);
-    animation: pulse 0.6s ease-in-out;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 65, 0.2);
 }
 
 .contact-social .platform-links {

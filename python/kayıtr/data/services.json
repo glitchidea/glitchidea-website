@@ -10,8 +10,7 @@
         "Web Application Pentest",
         "Network Security",
         "API Security Testing",
-        "Social Engineering",
-        "Vulnerability Assessment"
+        "Social Engineering"
       ],
       "deliverables": [
         "OWASP Top 10 ve özel güvenlik açıklarını tespit",
@@ -30,8 +29,7 @@
         "Django & Flask Framework",
         "RESTful & GraphQL APIs",
         "Database Design & Optimization",
-        "API Integration & Development",
-        "Microservices Architecture"
+        "API Integration & Development"
       ],
       "deliverables": [
         "Django ve Flask ile robust backend sistemleri",
@@ -50,15 +48,13 @@
         "SaaS Platforms",
         "Web Development",
         "Linux Services",
-        "DevOps & CI/CD",
-        "Otomasyon Sistemleri"
+        "DevOps & CI/CD"
       ],
       "deliverables": [
         "Ölçeklenebilir SaaS uygulamaları geliştirme",
         "Modern web siteleri ve frontend geliştirme",
         "Linux sistem yönetimi ve servis kurulumu",
-        "Otomatik deployment ve sürekli entegrasyon",
-        "İş akışlarını otomatikleştiren sistemler"
+        "Otomatik deployment ve sürekli entegrasyon"
       ]
     }
   ]

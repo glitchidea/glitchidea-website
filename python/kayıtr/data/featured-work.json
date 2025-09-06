@@ -1,0 +1,21 @@
+{
+  "featured_work": [
+    {
+      "id": 1,
+      "title": "Senior Security Consultant",
+      "company": "CyberTech Solutions",
+      "client": "Fortune 500 Financial Institution",
+      "period": "2023 - Present",
+      "description": "Led comprehensive security assessment and penetration testing for a major financial institution's digital infrastructure.",
+      "achievements": [
+        "Identified and remediated 15 critical vulnerabilities",
+        "Implemented zero-trust architecture",
+        "Reduced security incidents by 85%",
+        "Established security monitoring framework"
+      ],
+      "technologies": ["Python", "Metasploit", "Burp Suite", "AWS", "Kubernetes"],
+      "category": "pentest",
+      "featured": true
+    }
+  ]
+}
