@@ -17,7 +17,7 @@ class ContactComponent {
     
     async loadSocialLinks() {
         try {
-            const response = await fetch('./api/social.json');
+            const response = await fetch('/api/social');
             const data = await response.json();
             
             const socialContainer = this.contactSection?.querySelector('#contact-social-links');
@@ -143,7 +143,7 @@ let contactEmail = '';
 
 // Load contact email from social.json
 function loadContactEmail() {
-    fetch('./api/social.json')
+    fetch('/api/social')
         .then(response => response.json())
         .then(data => {
             const emailItem = data.social_links.find(item => item.type === 'contact');

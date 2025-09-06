@@ -38,7 +38,7 @@ class ProjectsComponent {
     
     async loadProjects() {
         try {
-            const response = await fetch('./api/projects.json');
+            const response = await fetch('/api/projects');
             const data = await response.json();
             
             this.allProjects = data.projects || [];

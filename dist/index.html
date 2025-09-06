@@ -38,19 +38,19 @@
 
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="./css/main.css">
-    <link rel="stylesheet" href="./css/components.css">
-    <link rel="stylesheet" href="./css/hero.css">
-    <link rel="stylesheet" href="./css/about.css">
-    <link rel="stylesheet" href="./css/services.css">
-    <link rel="stylesheet" href="./css/projects.css">
-    <link rel="stylesheet" href="./css/blog.css">
-    <link rel="stylesheet" href="./css/contact.css">
-    <link rel="stylesheet" href="./css/responsive.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/hero.css">
+    <link rel="stylesheet" href="/css/about.css">
+    <link rel="stylesheet" href="/css/services.css">
+    <link rel="stylesheet" href="/css/projects.css">
+    <link rel="stylesheet" href="/css/blog.css">
+    <link rel="stylesheet" href="/css/contact.css">
+    <link rel="stylesheet" href="/css/responsive.css">
     
     <!-- Preload critical resources -->
-    <link rel="preload" href="./js/main.js" as="script">
-    <link rel="preload" href="./js/animations.js" as="script">
+    <link rel="preload" href="/js/main.js" as="script">
+    <link rel="preload" href="/js/animations.js" as="script">
 </head>
 <body>
     <!-- Navigation -->
@@ -146,21 +146,21 @@
                 
                 <!-- Inner circles (VS Code, Git) -->
                 <div class="orbiting-circle inner vscode" title="Visual Studio Code">
-                    <img src="./images/code.svg" alt="VS Code" />
+                    <img src="/images/code.svg" alt="VS Code" />
                 </div>
                 
                 <div class="orbiting-circle inner git" title="Git">
-                    <img src="./images/git.svg" alt="Git" />
+                    <img src="/images/git.svg" alt="Git" />
                 </div>
                 
                 <!-- Middle circle (Arch Linux) -->
                 <div class="orbiting-circle middle" title="Arch Linux">
-                    <img src="./images/arch.svg" alt="Arch Linux" />
+                    <img src="/images/arch.svg" alt="Arch Linux" />
                 </div>
                 
                 <!-- Outer circle (GitHub) -->
                 <div class="orbiting-circle outer" title="GitHub">
-                    <img src="./images/github.svg" alt="GitHub" />
+                    <img src="/images/github.svg" alt="GitHub" />
                 </div>
             </div>
         </div>
@@ -187,7 +187,7 @@
                     <div class="avatar-container">
                         <div class="avatar-bg"></div>
                         <div class="avatar-image">
-                            <img src="./images/pp.jpeg" alt="GlitchIdea Profile" />
+                            <img src="/images/pp.jpeg" alt="GlitchIdea Profile" />
                         </div>
                     </div>
                 </div>
@@ -644,7 +644,7 @@ document.getElementById('current-year').textContent = new Date().getFullYear();
 // Load footer projects
 async function loadFooterProjects() {
     try {
-        const response = await fetch('./api/projects.json');
+        const response = await fetch('/api/footer-projects');
         const data = await response.json();
         
         const footerProjectsContainer = document.getElementById('footer-projects');
@@ -666,7 +666,7 @@ async function loadFooterProjects() {
 // Load footer social links
 async function loadFooterSocialLinks() {
     try {
-        const response = await fetch('./api/social.json');
+        const response = await fetch('/api/social');
         const data = await response.json();
         
         const footerSocialContainer = document.getElementById('footer-social-links');
@@ -775,15 +775,15 @@ document.addEventListener('DOMContentLoaded', () => {
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
     <!-- Custom JavaScript -->
-    <script src="./js/main.js"></script>
-    <script src="./js/animations.js"></script>
-    <script src="./js/components.js"></script>
-    <script src="./js/hero.js"></script>
-    <script src="./js/about.js"></script>
-    <script src="./js/services.js"></script>
-    <script src="./js/projects.js"></script>
-    <script src="./js/blog.js"></script>
-    <script src="./js/contact.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/animations.js"></script>
+    <script src="/js/components.js"></script>
+    <script src="/js/hero.js"></script>
+    <script src="/js/about.js"></script>
+    <script src="/js/services.js"></script>
+    <script src="/js/projects.js"></script>
+    <script src="/js/blog.js"></script>
+    <script src="/js/contact.js"></script>
     
     <!-- Initialize AOS -->
     <script>

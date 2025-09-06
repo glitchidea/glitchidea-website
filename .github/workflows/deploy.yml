@@ -1,66 +1,86 @@
-name: Deploy to GitHub Pages
+# GitHub Pages Deployment Workflow for GlitchIdea Portfolio
+# This workflow builds and deploys the static portfolio site to GitHub Pages
+# Repository: https://github.com/glitchidea/glitchidea-website
+
+name: Deploy GlitchIdea Portfolio to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  # Build job
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-
+        
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-
+          
       - name: Install dependencies
         run: npm ci
-
+        
       - name: Build static site
+        run: npm run build:static
+        
+      - name: Verify build output
         run: |
-          # Create dist directory
-          mkdir -p dist
+          echo "📁 Build output verification:"
+          ls -la dist/
+          echo "📄 Checking index.html:"
+          head -20 dist/index.html
+          echo "📊 Checking API files:"
+          ls -la dist/api/
+          echo "🎨 Checking CSS files:"
+          ls -la dist/css/ | head -5
+          echo "⚡ Checking JS files:"
+          ls -la dist/js/ | head -5
+          echo "🖼️ Checking images:"
+          ls -la dist/images/ | head -5
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload dist directory to Pages
+          path: 'dist'
           
-          # Copy public files to dist (if public folder exists)
-          if [ -d "public" ]; then
-            cp -r public/* dist/
-          fi
-          
-          # Build static site
-          npm run build:static
-
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        
+      - name: Deployment success notification
         run: |
-          # Configure git
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          
-          # Switch to gh-pages branch or create it
-          git checkout gh-pages || git checkout -b gh-pages
-          
-          # Remove all files except .git
-          git rm -rf . || true
-          
-          # Copy dist contents to root
-          cp -r dist/* .
-          
-          # Add all files
-          git add .
-          
-          # Commit and push
-          git commit -m "Deploy from main branch - $(date '+%Y-%m-%d %H:%M:%S')" || exit 0
-          git push origin gh-pages
+          echo "🎉 Deployment completed successfully!"
+          echo "🌐 Site URL: ${{ steps.deployment.outputs.page_url }}"
+          echo "📱 Portfolio is now live at: https://glitchidea.github.io/glitchidea-website"

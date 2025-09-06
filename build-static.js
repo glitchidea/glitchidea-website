@@ -30,16 +30,28 @@ const copyRecursive = (src, dest) => {
   }
 };
 
-// Note: public files should be manually copied to dist/ before running this script
-// or use: cp -r public/* dist/ (if public folder exists)
+copyRecursive('public', 'dist');
 
-// Load data files from dist/api (these should be manually maintained)
+// Load data files from dist/api (if exists) or create default data
 console.log('📊 Loading data files...');
-const socialData = JSON.parse(fs.readFileSync('./dist/api/social.json', 'utf8'));
-const projectsData = JSON.parse(fs.readFileSync('./dist/api/projects.json', 'utf8'));
-const servicesData = JSON.parse(fs.readFileSync('./dist/api/services.json', 'utf8'));
-const blogData = JSON.parse(fs.readFileSync('./dist/api/blog.json', 'utf8'));
-const workData = JSON.parse(fs.readFileSync('./dist/api/work.json', 'utf8'));
+let socialData, projectsData, servicesData, blogData, workData;
+
+try {
+  // Try to load from existing dist/api files
+  socialData = JSON.parse(fs.readFileSync('./dist/api/social.json', 'utf8'));
+  projectsData = JSON.parse(fs.readFileSync('./dist/api/projects.json', 'utf8'));
+  servicesData = JSON.parse(fs.readFileSync('./dist/api/services.json', 'utf8'));
+  blogData = JSON.parse(fs.readFileSync('./dist/api/blog.json', 'utf8'));
+  workData = JSON.parse(fs.readFileSync('./dist/api/work.json', 'utf8'));
+} catch (error) {
+  console.log('⚠️  No existing data files found, using default data...');
+  // Default data structure
+  socialData = { social_links: [] };
+  projectsData = { projects: [] };
+  servicesData = { services: [] };
+  blogData = { posts: [] };
+  workData = { work_experience: [] };
+}
 
 // Render main template
 console.log('🎨 Rendering templates...');
@@ -87,29 +99,18 @@ const html = ejs.render(layoutHtml, {
   keywords: 'siber güvenlik, penetrasyon test, güvenlik danışmanı, web geliştirme, django, flask, python güvenlik'
 });
 
-// Fix paths for GitHub Pages deployment
-// Replace absolute paths with relative paths
-const fixedHtml = html
-  .replace(/href="\/css\//g, 'href="./css/')
-  .replace(/href="\/js\//g, 'href="./js/')
-  .replace(/href="\/images\//g, 'href="./images/')
-  .replace(/href="\/fonts\//g, 'href="./fonts/')
-  .replace(/src="\/css\//g, 'src="./css/')
-  .replace(/src="\/js\//g, 'src="./js/')
-  .replace(/src="\/images\//g, 'src="./images/')
-  .replace(/src="\/fonts\//g, 'src="./fonts/')
-  .replace(/url\(\/css\//g, 'url(./css/')
-  .replace(/url\(\/images\//g, 'url(./images/')
-  .replace(/url\(\/fonts\//g, 'url(./fonts/');
-
 // Write index.html
-fs.writeFileSync('./dist/index.html', fixedHtml);
+fs.writeFileSync('./dist/index.html', html);
+
+// Ensure dist/api directory exists
+if (!fs.existsSync('dist/api')) {
+  fs.mkdirSync('dist/api', { recursive: true });
+}
 
 // Create .nojekyll file for GitHub Pages
-fs.writeFileSync('./dist/.nojekyll', '');
-
-// Note: API data files are already in dist/api/ and should be manually maintained
+fs.writeFileSync('./dist/.nojekyll', '# This file tells GitHub Pages to not use Jekyll\n# Since we\'re deploying a static site built with Node.js/EJS');
 
 console.log('✅ Static site build completed!');
 console.log('📁 Files created in dist/ directory');
+console.log('🚫 .nojekyll file created for GitHub Pages');
 console.log('🌐 Ready for GitHub Pages deployment');
