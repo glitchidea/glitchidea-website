@@ -264,7 +264,7 @@
     }
 }
 
-/* Reduced Motion */
+/* Reduced Motion - Only apply to users who explicitly prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -281,12 +281,22 @@
     .scroll-indicator {
         animation: none;
     }
+    
+    .orbiting-circle {
+        animation: none !important;
+    }
+    
+    .fade-in-element {
+        animation: none !important;
+    }
 }
 
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
-    :root {
-        /* Colors already set for dark theme */
+    /* Colors already set for dark theme in :root */
+    body {
+        background-color: var(--primary-bg);
+        color: var(--text-primary);
     }
 }
 
@@ -324,6 +334,49 @@
     }
 }
 
+/* Missing Animation Keyframes for Mobile */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes serviceCardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes avatarFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes skillFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Mobile Animation Support */
 @media (max-width: 768px) {
     /* Ensure animations work on mobile */
@@ -331,6 +384,36 @@
     .orbiting-circles-container,
     .orbiting-circle {
         animation-play-state: running !important;
+    }
+    
+    /* Orbiting circles animations for mobile */
+    .orbiting-circle.inner {
+        animation: orbit-inner 30s linear infinite !important;
+    }
+    
+    .orbiting-circle.middle {
+        animation: orbit-middle 30s linear infinite reverse !important;
+    }
+    
+    .orbiting-circle.outer {
+        animation: orbit-outer 30s linear infinite !important;
+    }
+    
+    /* Typing animation for mobile */
+    .hero-title.typewriter-cursor::after {
+        animation: blink 1s infinite !important;
+    }
+    
+    /* Fade in animations */
+    .fade-in-element {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-out !important;
+    }
+    
+    .fade-in-element.fade-in {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
     }
     
     /* Contact animations */
@@ -361,6 +444,20 @@
     .footer-column {
         animation: fadeInUp 0.8s ease-out !important;
     }
+    
+    /* Scroll indicator animation */
+    .scroll-arrow {
+        animation: bounce 2s infinite !important;
+    }
+    
+    /* Card hover effects for touch devices */
+    .card:hover,
+    .service-card:hover,
+    .project-card:hover,
+    .blog-card:hover {
+        transform: translateY(-5px) !important;
+        transition: all 0.3s ease !important;
+    }
 }
 
 @media (max-width: 480px) {
@@ -376,5 +473,35 @@
         animation-duration: inherit !important;
         animation-iteration-count: inherit !important;
         transition-duration: inherit !important;
+    }
+    
+    /* Orbiting circles for small mobile */
+    .orbiting-circle.inner {
+        animation: orbit-inner 30s linear infinite !important;
+    }
+    
+    .orbiting-circle.middle {
+        animation: orbit-middle 30s linear infinite reverse !important;
+    }
+    
+    .orbiting-circle.outer {
+        animation: orbit-outer 30s linear infinite !important;
+    }
+    
+    /* Typing animation for small mobile */
+    .hero-title.typewriter-cursor::after {
+        animation: blink 1s infinite !important;
+    }
+    
+    /* Fade in animations for small mobile */
+    .fade-in-element {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-out !important;
+    }
+    
+    .fade-in-element.fade-in {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
     }
 }

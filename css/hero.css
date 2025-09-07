@@ -231,6 +231,24 @@
             transform: rotate(360deg) translateX(140px) rotate(-360deg);
         }
     }
+    
+    /* Ensure orbiting circles work on mobile */
+    .orbiting-circle {
+        animation-play-state: running !important;
+        will-change: transform;
+    }
+    
+    .orbiting-circle.inner {
+        animation: orbit-inner 30s linear infinite !important;
+    }
+    
+    .orbiting-circle.middle {
+        animation: orbit-middle 30s linear infinite reverse !important;
+    }
+    
+    .orbiting-circle.outer {
+        animation: orbit-outer 30s linear infinite !important;
+    }
 }
 
 @media (max-width: 480px) {
@@ -259,6 +277,24 @@
         100% {
             transform: rotate(360deg) translateX(110px) rotate(-360deg);
         }
+    }
+    
+    /* Ensure orbiting circles work on small mobile */
+    .orbiting-circle {
+        animation-play-state: running !important;
+        will-change: transform;
+    }
+    
+    .orbiting-circle.inner {
+        animation: orbit-inner 30s linear infinite !important;
+    }
+    
+    .orbiting-circle.middle {
+        animation: orbit-middle 30s linear infinite reverse !important;
+    }
+    
+    .orbiting-circle.outer {
+        animation: orbit-outer 30s linear infinite !important;
     }
 }
 
