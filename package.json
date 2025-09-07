@@ -9,8 +9,6 @@
     "dev": "nodemon server.js",
     "build": "npm ci && npm run build:static",
     "build:static": "node build-static.js",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
     "test": "echo 'No tests specified'"
   },
   "keywords": [
@@ -33,7 +31,6 @@
   },
   "devDependencies": {
     "eslint": "^8.55.0",
-    "gh-pages": "^6.3.0",
     "nodemon": "^3.0.2",
     "prettier": "^3.1.0"
   },

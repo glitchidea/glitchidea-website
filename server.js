@@ -181,44 +181,6 @@ app.get('/api/services', (req, res) => {
 });
 
 
-app.get('/api/work', (req, res) => {
-  try {
-    // Load work experience (same as business for now)
-    const workData = require('./dist/api/work.json');
-    res.json(workData);
-  } catch (error) {
-    console.error('Error loading work:', error);
-    res.status(500).json({ error: 'Failed to load work data' });
-  }
-});
-
-app.get('/api/all-work', (req, res) => {
-  try {
-    const category = req.query.category;
-    const workData = require('./dist/api/work.json');
-    
-    if (category && category !== 'all') {
-      // Filter by category
-      const filteredWork = {
-        work_experience: workData.work_experience.filter(work => work.category === category)
-      };
-      res.json(filteredWork);
-    } else {
-      // Return all work, sorted by date (newest first)
-      const sortedWork = {
-        work_experience: workData.work_experience.sort((a, b) => {
-          const yearA = parseInt(a.period.split(' - ')[0]);
-          const yearB = parseInt(b.period.split(' - ')[0]);
-          return yearB - yearA;
-        })
-      };
-      res.json(sortedWork);
-    }
-  } catch (error) {
-    console.error('Error loading all work:', error);
-    res.status(500).json({ error: 'Failed to load all work' });
-  }
-});
 
 app.get('/api/blog', (req, res) => {
   const blog = require('./data/blog.json');
