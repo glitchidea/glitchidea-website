@@ -323,3 +323,58 @@
         text-decoration: underline;
     }
 }
+
+/* Mobile Animation Support */
+@media (max-width: 768px) {
+    /* Ensure animations work on mobile */
+    .hero-visual,
+    .orbiting-circles-container,
+    .orbiting-circle {
+        animation-play-state: running !important;
+    }
+    
+    /* Contact animations */
+    .contact-animated .contact-item {
+        animation: slideInLeft 0.6s ease-out forwards !important;
+    }
+    
+    .contact-animated .social-link {
+        animation: fadeInUp 0.5s ease-out forwards !important;
+    }
+    
+    /* Service card animations */
+    .service-card.modern {
+        animation: serviceCardFadeIn 0.6s ease forwards !important;
+    }
+    
+    /* About animations */
+    .avatar-container {
+        animation: avatarFloat 2s ease-in-out infinite !important;
+    }
+    
+    .skill-category {
+        animation: skillFadeIn 0.8s ease forwards !important;
+    }
+    
+    /* Footer animations */
+    .footer-logo,
+    .footer-column {
+        animation: fadeInUp 0.8s ease-out !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Small mobile animation support */
+    .hero-visual,
+    .orbiting-circles-container,
+    .orbiting-circle {
+        animation-play-state: running !important;
+    }
+    
+    /* Ensure all animations work on small mobile */
+    * {
+        animation-duration: inherit !important;
+        animation-iteration-count: inherit !important;
+        transition-duration: inherit !important;
+    }
+}
