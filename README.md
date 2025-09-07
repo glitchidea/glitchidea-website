@@ -129,7 +129,7 @@ All content is managed through JSON files in `dist/api/`:
 
 ## 📄 License
 
-Apache License - see [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 👨‍💻 Author
 
