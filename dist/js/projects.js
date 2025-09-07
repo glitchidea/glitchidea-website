@@ -29,6 +29,7 @@ class ProjectsComponent {
         this.loadProjects();
         this.initEventListeners();
         this.initViewToggle();
+        this.initMobileOptimization();
         
         // Ensure view toggle is initialized after a short delay
         setTimeout(() => {
@@ -276,6 +277,54 @@ class ProjectsComponent {
     
     getProjectsData() {
         return this.filteredProjects;
+    }
+    
+    // Mobile optimization methods
+    initMobileOptimization() {
+        // Check if device is mobile and switch to list view
+        this.checkMobileView();
+        
+        // Listen for window resize to handle orientation changes
+        window.addEventListener('resize', () => {
+            this.checkMobileView();
+        });
+    }
+    
+    checkMobileView() {
+        const isMobile = window.innerWidth <= 768;
+        const isTablet = window.innerWidth <= 1024;
+        
+        if (isMobile && this.currentView === 'table') {
+            // Switch to list view on mobile
+            this.switchView('list');
+            
+            // Update active state in dropdown
+            const viewOptions = this.viewMenu ? this.viewMenu.querySelectorAll('.view-option') : null;
+            if (viewOptions) {
+                viewOptions.forEach(opt => opt.classList.remove('active'));
+                const listOption = Array.from(viewOptions).find(opt => opt.getAttribute('data-view') === 'list');
+                if (listOption) {
+                    listOption.classList.add('active');
+                }
+            }
+        } else if (!isMobile && !isTablet && this.currentView === 'list') {
+            // Switch back to table view on desktop
+            this.switchView('table');
+            
+            // Update active state in dropdown
+            const viewOptions = this.viewMenu ? this.viewMenu.querySelectorAll('.view-option') : null;
+            if (viewOptions) {
+                viewOptions.forEach(opt => opt.classList.remove('active'));
+                const tableOption = Array.from(viewOptions).find(opt => opt.getAttribute('data-view') === 'table');
+                if (tableOption) {
+                    tableOption.classList.add('active');
+                }
+            }
+        }
+    }
+    
+    isMobileDevice() {
+        return window.innerWidth <= 768;
     }
 }
 

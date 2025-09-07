@@ -436,48 +436,220 @@
 
 /* Responsive Projects */
 @media (max-width: 768px) {
+    .projects-container {
+        padding: 1.5rem 1rem;
+        margin: 0 0.5rem;
+    }
+    
     .projects-controls {
         flex-direction: column;
         align-items: stretch;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
     }
     
     .filters-group {
         flex-direction: column;
+        gap: 1rem;
     }
     
     .filter-input {
         min-width: auto;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .view-dropdown {
+        align-self: center;
+    }
+    
+    .dropdown-btn {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
     }
     
     .projects-table-container {
         overflow-x: auto;
+        border-radius: 0.75rem;
+        margin: 0 -0.5rem;
     }
     
     .projects-table {
-        min-width: 600px;
-    }
-    
-    .load-more-container {
-        padding: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .projects-controls {
-        padding: 0.75rem;
+        min-width: 700px;
+        font-size: 0.9rem;
     }
     
     .projects-table th,
     .projects-table td {
-        padding: 0.75rem 0.5rem;
+        padding: 1rem 0.75rem;
+        white-space: nowrap;
     }
     
-    .projects-table {
+    .projects-table th {
         font-size: 0.8rem;
+        padding: 1.25rem 0.75rem;
+    }
+    
+    .load-more-container {
+        padding: 1.5rem;
     }
     
     .load-more-btn {
-        padding: 0.5rem 1rem;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+    }
+    
+    /* List view improvements for mobile */
+    .projects-list-container {
+        border-radius: 0.75rem;
+        margin: 0 -0.5rem;
+    }
+    
+    .project-list-item {
+        padding: 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .project-list-meta {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .projects-container {
+        padding: 1rem 0.5rem;
+        margin: 0 0.25rem;
+    }
+    
+    .projects-controls {
+        padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .filter-input {
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .dropdown-btn {
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .projects-table-container,
+    .projects-list-container {
+        margin: 0 -0.25rem;
+        border-radius: 0.5rem;
+    }
+    
+    .projects-table {
+        min-width: 650px;
+        font-size: 0.85rem;
+    }
+    
+    .projects-table th,
+    .projects-table td {
+        padding: 0.875rem 0.5rem;
+    }
+    
+    .projects-table th {
+        font-size: 0.75rem;
+        padding: 1rem 0.5rem;
+    }
+    
+    .project-list-item {
+        padding: 1.25rem;
+    }
+    
+    .project-list-title {
+        font-size: 1.1rem;
+    }
+    
+    .project-list-repo,
+    .project-list-tech {
+        font-size: 0.9rem;
+    }
+    
+    .load-more-container {
+        padding: 1.25rem;
+    }
+    
+    .load-more-btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Category and status badges for mobile */
+    .category-badge,
+    .status-badge {
+        font-size: 0.7rem;
+        padding: 0.375rem 0.625rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .projects-container {
+        padding: 0.75rem 0.25rem;
+        margin: 0;
+    }
+    
+    .projects-controls {
+        padding: 0.75rem;
+    }
+    
+    .filter-input {
+        padding: 0.75rem 0.875rem;
+        font-size: 0.9rem;
+    }
+    
+    .dropdown-btn {
+        padding: 0.75rem 0.875rem;
+        font-size: 0.9rem;
+    }
+    
+    .projects-table {
+        min-width: 600px;
         font-size: 0.8rem;
+    }
+    
+    .projects-table th,
+    .projects-table td {
+        padding: 0.75rem 0.375rem;
+    }
+    
+    .projects-table th {
+        font-size: 0.7rem;
+        padding: 0.875rem 0.375rem;
+    }
+    
+    .project-list-item {
+        padding: 1rem;
+    }
+    
+    .project-list-title {
+        font-size: 1rem;
+    }
+    
+    .project-list-repo,
+    .project-list-tech {
+        font-size: 0.85rem;
+    }
+    
+    .load-more-btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.85rem;
+    }
+    
+    .category-badge,
+    .status-badge {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.5rem;
     }
 }
