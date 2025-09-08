@@ -25,16 +25,20 @@ function initHeroAnimations() {
         }, 2000); // 2 seconds after page load
     }
     
-    // Animate orbiting circles on scroll
+    // Animate orbiting circles on scroll (desktop only)
+    // On mobile, keep the default CSS keyframe animations for smoothness
     const orbitingCircles = document.querySelectorAll('.orbiting-circle');
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const rate = scrolled * -0.5;
-        
-        orbitingCircles.forEach((circle, index) => {
-            circle.style.transform = `rotate(${rate + (index * 30)}deg)`;
-        });
-    });
+    const isDesktop = window.matchMedia('(min-width: 769px)').matches && !('ontouchstart' in window);
+    if (isDesktop) {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            
+            orbitingCircles.forEach((circle, index) => {
+                circle.style.transform = `rotate(${rate + (index * 30)}deg)`;
+            });
+        }, { passive: true });
+    }
 }
 
 // Typewriter Cycle Function
