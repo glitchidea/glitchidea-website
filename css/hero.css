@@ -252,6 +252,32 @@
         width: 40px;
         height: 40px;
     }
+
+    /* Recalculate orbit radii for mobile so icons stay on paths */
+    @keyframes orbit-inner {
+        0% {
+            transform: rotate(0deg) translateX(60px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(60px) rotate(-360deg);
+        }
+    }
+    @keyframes orbit-middle {
+        0% {
+            transform: rotate(0deg) translateX(90px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(90px) rotate(-360deg);
+        }
+    }
+    @keyframes orbit-outer {
+        0% {
+            transform: rotate(0deg) translateX(140px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(140px) rotate(-360deg);
+        }
+    }
 }
 
 @media (max-width: 480px) {
@@ -309,6 +335,31 @@
         height: 36px;
     }
     
+    /* Small mobile: adjust radii again to match smaller rings */
+    @keyframes orbit-inner {
+        0% {
+            transform: rotate(0deg) translateX(50px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(50px) rotate(-360deg);
+        }
+    }
+    @keyframes orbit-middle {
+        0% {
+            transform: rotate(0deg) translateX(75px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(75px) rotate(-360deg);
+        }
+    }
+    @keyframes orbit-outer {
+        0% {
+            transform: rotate(0deg) translateX(110px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(110px) rotate(-360deg);
+        }
+    }
 }
 
 /* Scroll Indicator */
