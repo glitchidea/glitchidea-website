@@ -314,9 +314,3 @@
     }
 }
 
-/* Mobile Animation Fix */
-@media (max-width: 768px) {
-    .orbiting-circle {
-        animation-play-state: running !important;
-    }
-}
