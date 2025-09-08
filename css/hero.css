@@ -49,19 +49,6 @@
     overflow: hidden;
 }
 
-/* Typewriter cursor effect */
-.hero-title.typewriter-cursor::after {
-    content: '|';
-    color: var(--accent-color);
-    font-weight: 300;
-    animation: blink 1s infinite;
-    margin-left: 2px;
-}
-
-@keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-}
 
 .hero-subtitle {
     font-size: 1.2rem;
@@ -232,23 +219,6 @@
         }
     }
     
-    /* Ensure orbiting circles work on mobile */
-    .orbiting-circle {
-        animation-play-state: running !important;
-        will-change: transform;
-    }
-    
-    .orbiting-circle.inner {
-        animation: orbit-inner 30s linear infinite !important;
-    }
-    
-    .orbiting-circle.middle {
-        animation: orbit-middle 30s linear infinite reverse !important;
-    }
-    
-    .orbiting-circle.outer {
-        animation: orbit-outer 30s linear infinite !important;
-    }
 }
 
 @media (max-width: 480px) {
@@ -279,23 +249,6 @@
         }
     }
     
-    /* Ensure orbiting circles work on small mobile */
-    .orbiting-circle {
-        animation-play-state: running !important;
-        will-change: transform;
-    }
-    
-    .orbiting-circle.inner {
-        animation: orbit-inner 30s linear infinite !important;
-    }
-    
-    .orbiting-circle.middle {
-        animation: orbit-middle 30s linear infinite reverse !important;
-    }
-    
-    .orbiting-circle.outer {
-        animation: orbit-outer 30s linear infinite !important;
-    }
 }
 
 /* Responsive design */
@@ -334,7 +287,7 @@
     }
     
     .orbiting-circle.inner.git {
-        animation-delay: -4s;
+        animation-delay: -12s;
     }
     
     .orbiting-circle.middle {
