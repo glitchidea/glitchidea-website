@@ -291,7 +291,7 @@ ${message}
 
 İyi günler.`;
                 
-                const mailtoLink = `mailto:glitchidea65@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                const mailtoLink = `mailto:info@glitchidea.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                 
                 // Open mailto link
                 window.location.href = mailtoLink;
@@ -301,7 +301,7 @@ ${message}
                 
             } catch (error) {
                 console.error('Error creating mailto link:', error);
-                showNotification('E-posta oluşturulamadı. Lütfen manuel olarak glitchidea65@gmail.com adresine yazın.', 'error');
+                showNotification('E-posta oluşturulamadı. Lütfen manuel olarak info@glitchidea.com adresine yazın.', 'error');
             } finally {
                 // Re-enable submit button
                 submitButton.disabled = false;
