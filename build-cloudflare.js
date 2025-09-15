@@ -92,5 +92,12 @@ if (fs.existsSync('images')) {
   copyRecursive('images', 'dist/images');
 }
 
+// Create a simple index.html in root for Cloudflare Pages
+if (fs.existsSync('dist/index.html')) {
+  fs.copyFileSync('dist/index.html', 'index.html');
+  console.log('📄 Copied index.html to root directory');
+}
+
 console.log('✅ Cloudflare Pages build completed!');
 console.log('📁 Files ready in dist/ directory');
+console.log('📄 index.html copied to root for Cloudflare Pages');
