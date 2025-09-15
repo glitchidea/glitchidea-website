@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://glitchidea.com/sitemap.xml
+
+# Allow all search engines to crawl
+Crawl-delay: 1
+
+# Block access to sensitive directories
+Disallow: /node_modules/
+Disallow: /python/
+Disallow: /views/
+Disallow: /server.js
+Disallow: /build-static.js
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /vercel.json
+
+# Allow important files
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /api/
+Allow: /dist/

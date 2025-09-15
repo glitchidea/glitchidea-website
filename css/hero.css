@@ -49,6 +49,19 @@
     overflow: hidden;
 }
 
+/* Typewriter cursor effect */
+.hero-title.typewriter-cursor::after {
+    content: '|';
+    color: var(--accent-color);
+    font-weight: 300;
+    animation: blink 1s infinite;
+    margin-left: 2px;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
 
 .hero-subtitle {
     font-size: 1.2rem;
@@ -190,7 +203,64 @@
     }
 }
 
+/* Responsive animations */
+@media (max-width: 768px) {
+    @keyframes orbit-inner {
+        0% {
+            transform: rotate(0deg) translateX(60px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(60px) rotate(-360deg);
+        }
+    }
+    
+    @keyframes orbit-middle {
+        0% {
+            transform: rotate(0deg) translateX(90px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(90px) rotate(-360deg);
+        }
+    }
+    
+    @keyframes orbit-outer {
+        0% {
+            transform: rotate(0deg) translateX(140px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(140px) rotate(-360deg);
+        }
+    }
+}
 
+@media (max-width: 480px) {
+    @keyframes orbit-inner {
+        0% {
+            transform: rotate(0deg) translateX(50px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(50px) rotate(-360deg);
+        }
+    }
+    
+    @keyframes orbit-middle {
+        0% {
+            transform: rotate(0deg) translateX(75px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(75px) rotate(-360deg);
+        }
+    }
+    
+    @keyframes orbit-outer {
+        0% {
+            transform: rotate(0deg) translateX(110px) rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg) translateX(110px) rotate(-360deg);
+        }
+    }
+}
 
 /* Responsive design */
 @media (max-width: 768px) {
@@ -223,6 +293,14 @@
         height: 40px;
     }
     
+    .orbiting-circle.inner.vscode {
+        animation-delay: 0s;
+    }
+    
+    .orbiting-circle.inner.git {
+        animation-delay: -4s;
+    }
+    
     .orbiting-circle.middle {
         width: 40px;
         height: 40px;
@@ -252,32 +330,6 @@
         width: 40px;
         height: 40px;
     }
-
-    /* Recalculate orbit radii for mobile so icons stay on paths */
-    @keyframes orbit-inner {
-        0% {
-            transform: rotate(0deg) translateX(60px) rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg) translateX(60px) rotate(-360deg);
-        }
-    }
-    @keyframes orbit-middle {
-        0% {
-            transform: rotate(0deg) translateX(90px) rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg) translateX(90px) rotate(-360deg);
-        }
-    }
-    @keyframes orbit-outer {
-        0% {
-            transform: rotate(0deg) translateX(140px) rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg) translateX(140px) rotate(-360deg);
-        }
-    }
 }
 
 @media (max-width: 480px) {
@@ -303,6 +355,14 @@
     .orbiting-circle.inner {
         width: 36px;
         height: 36px;
+    }
+    
+    .orbiting-circle.inner.vscode {
+        animation-delay: 0s;
+    }
+    
+    .orbiting-circle.inner.git {
+        animation-delay: -12s;
     }
     
     .orbiting-circle.middle {
@@ -335,31 +395,6 @@
         height: 36px;
     }
     
-    /* Small mobile: adjust radii again to match smaller rings */
-    @keyframes orbit-inner {
-        0% {
-            transform: rotate(0deg) translateX(50px) rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg) translateX(50px) rotate(-360deg);
-        }
-    }
-    @keyframes orbit-middle {
-        0% {
-            transform: rotate(0deg) translateX(75px) rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg) translateX(75px) rotate(-360deg);
-        }
-    }
-    @keyframes orbit-outer {
-        0% {
-            transform: rotate(0deg) translateX(110px) rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg) translateX(110px) rotate(-360deg);
-        }
-    }
 }
 
 /* Scroll Indicator */

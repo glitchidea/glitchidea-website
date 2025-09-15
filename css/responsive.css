@@ -264,19 +264,29 @@
     }
 }
 
-/* Reduced Motion - Only apply to users who explicitly prefer reduced motion */
+/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-    .orbiting-circle {
-        animation: none !important;
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .typing-text {
+        animation: none;
+    }
+    
+    .scroll-indicator {
+        animation: none;
     }
 }
 
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
-    /* Colors already set for dark theme in :root */
-    body {
-        background-color: var(--primary-bg);
-        color: var(--text-primary);
+    :root {
+        /* Colors already set for dark theme */
     }
 }
 
@@ -313,4 +323,3 @@
         text-decoration: underline;
     }
 }
-

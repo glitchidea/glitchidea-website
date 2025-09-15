@@ -9,6 +9,7 @@
     "dev": "nodemon server.js",
     "build": "npm ci && npm run build:static",
     "build:static": "node build-static.js",
+    "build:cloudflare": "node build-cloudflare.js",
     "test": "echo 'No tests specified'"
   },
   "keywords": [

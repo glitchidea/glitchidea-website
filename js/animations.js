@@ -1,5 +1,51 @@
 // ===== ANIMATIONS JAVASCRIPT =====
 
+// Typing Animation
+function initTypingAnimation() {
+    const typingElement = document.getElementById('typing-text');
+    if (!typingElement) return;
+
+    const texts = [
+        'Modern Solutions for Customer Engagement',
+        'Cybersecurity Expert & Ethical Hacker',
+        'Full-Stack Developer & Pentester',
+        'Building Secure Digital Solutions'
+    ];
+
+    let textIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let typingSpeed = 100;
+
+    function typeText() {
+        const currentText = texts[textIndex];
+        
+        if (isDeleting) {
+            typingElement.textContent = currentText.substring(0, charIndex - 1);
+            charIndex--;
+            typingSpeed = 50;
+        } else {
+            typingElement.textContent = currentText.substring(0, charIndex + 1);
+            charIndex++;
+            typingSpeed = 100;
+        }
+
+        if (!isDeleting && charIndex === currentText.length) {
+            // Pause at end
+            typingSpeed = 2000;
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            textIndex = (textIndex + 1) % texts.length;
+            typingSpeed = 500;
+        }
+
+        setTimeout(typeText, typingSpeed);
+    }
+
+    // Start typing animation after a delay
+    setTimeout(typeText, 1000);
+}
 
 // Parallax Effect
 function initParallaxEffect() {
@@ -89,7 +135,6 @@ function initHoverEffects() {
     });
 }
 
-
 // Loading Animation
 function initLoadingAnimation() {
     const loadingSpinner = document.getElementById('loading-spinner');
@@ -108,6 +153,7 @@ function initLoadingAnimation() {
 
 // Initialize all animations when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    initTypingAnimation();
     initParallaxEffect();
     initFadeInAnimation();
     initCounterAnimation();

@@ -11,14 +11,63 @@
     <meta property="og:title" content="<%= title %>">
     <meta property="og:description" content="<%= description %>">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://glitchidea.dev">
-    <meta property="og:image" content="/images/og-image.jpg">
+    <meta property="og:url" content="https://glitchidea.com">
+    <meta property="og:image" content="https://glitchidea.com/images/og-image.jpg">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<%= title %>">
     <meta name="twitter:description" content="<%= description %>">
-    <meta name="twitter:image" content="/images/og-image.jpg">
+    <meta name="twitter:image" content="https://glitchidea.com/images/og-image.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://glitchidea.com/">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "GlitchIdea",
+      "jobTitle": "Siber Güvenlik Uzmanı",
+      "description": "Siber Güvenlik Uzmanı & Güvenlik Danışmanı. Python Güvenlik Geliştiricisi, Django & Flask Uzmanı, Penetrasyon Test Uzmanı.",
+      "url": "https://glitchidea.com",
+      "image": "https://glitchidea.com/images/pp.jpeg",
+      "sameAs": [
+        "https://github.com/glitchidea",
+        "https://medium.com/@glitchidea"
+      ],
+      "knowsAbout": [
+        "Siber Güvenlik",
+        "Penetrasyon Test",
+        "Python",
+        "Django",
+        "Flask",
+        "Web Güvenliği",
+        "Vulnerability Assessment",
+        "OWASP",
+        "Linux",
+        "Cybersecurity"
+      ],
+      "offers": {
+        "@type": "Service",
+        "name": "Siber Güvenlik Hizmetleri",
+        "description": "Penetrasyon test, güvenlik danışmanlığı, web uygulama güvenlik testi ve siber güvenlik çözümleri",
+        "provider": {
+          "@type": "Person",
+          "name": "GlitchIdea"
+        },
+        "areaServed": "Türkiye",
+        "serviceType": "Cybersecurity Services"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "TR",
+        "addressRegion": "Remote"
+      },
+      "email": "glitchidea65@gmail.com"
+    }
+    </script>
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
@@ -98,15 +147,6 @@
         });
     </script>
     
-    <!-- Google Analytics (Optional) -->
-    <!--
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'GA_MEASUREMENT_ID');
-    </script>
-    -->
+
 </body>
 </html>
