@@ -82,7 +82,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
     
 
     
@@ -821,7 +821,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     
     <!-- AOS Animation Library -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
     
     <!-- Custom JavaScript -->
     <script src="./js/main.js"></script>
@@ -836,11 +836,27 @@ document.addEventListener('DOMContentLoaded', () => {
     
     <!-- Initialize AOS -->
     <script>
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true,
-            offset: 100
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    duration: 800,
+                    easing: 'ease-in-out',
+                    once: true,
+                    offset: 100
+                });
+            } else {
+                // AOS yüklenmediyse tekrar dene
+                setTimeout(function() {
+                    if (typeof AOS !== 'undefined') {
+                        AOS.init({
+                            duration: 800,
+                            easing: 'ease-in-out',
+                            once: true,
+                            offset: 100
+                        });
+                    }
+                }, 1000);
+            }
         });
     </script>
     
