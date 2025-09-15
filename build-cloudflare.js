@@ -29,8 +29,22 @@ const copyRecursive = (src, dest) => {
   }
 };
 
-// Copy public to dist
-copyRecursive('public', 'dist');
+// Copy public to dist (if exists)
+if (fs.existsSync('public')) {
+  copyRecursive('public', 'dist');
+} else {
+  console.log('⚠️  Public directory not found, creating basic structure...');
+  // Create basic dist structure
+  if (!fs.existsSync('dist/css')) {
+    fs.mkdirSync('dist/css', { recursive: true });
+  }
+  if (!fs.existsSync('dist/js')) {
+    fs.mkdirSync('dist/js', { recursive: true });
+  }
+  if (!fs.existsSync('dist/images')) {
+    fs.mkdirSync('dist/images', { recursive: true });
+  }
+}
 
 // Copy API files to dist/api
 if (fs.existsSync('api')) {
@@ -52,6 +66,30 @@ if (fs.existsSync('sitemap.xml')) {
 // Copy index.html to dist
 if (fs.existsSync('index.html')) {
   fs.copyFileSync('index.html', 'dist/index.html');
+}
+
+// Copy CSS files to dist/css
+if (fs.existsSync('css')) {
+  if (!fs.existsSync('dist/css')) {
+    fs.mkdirSync('dist/css', { recursive: true });
+  }
+  copyRecursive('css', 'dist/css');
+}
+
+// Copy JS files to dist/js
+if (fs.existsSync('js')) {
+  if (!fs.existsSync('dist/js')) {
+    fs.mkdirSync('dist/js', { recursive: true });
+  }
+  copyRecursive('js', 'dist/js');
+}
+
+// Copy images to dist/images
+if (fs.existsSync('images')) {
+  if (!fs.existsSync('dist/images')) {
+    fs.mkdirSync('dist/images', { recursive: true });
+  }
+  copyRecursive('images', 'dist/images');
 }
 
 console.log('✅ Cloudflare Pages build completed!');
