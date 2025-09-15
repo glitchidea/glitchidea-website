@@ -261,30 +261,47 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Handle form submission
     if (projectForm) {
-        projectForm.addEventListener('submit', (e) => {
+        projectForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Get form data
-            const formDataObj = new FormData(projectForm);
-            formData = Object.fromEntries(formDataObj);
+            const submitBtn = projectForm.querySelector('#sendForm');
+            const originalText = submitBtn.innerHTML;
+            const status = document.getElementById('form-status');
             
-            // Handle "Diğer" project type
-            if (formData.projectType === 'Diğer') {
-                if (!formData.otherProjectType) {
-                    alert('Lütfen proje türünüzü belirtin.');
-                    return;
+            // Loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
+            if (status) status.style.display = 'none';
+            
+            try {
+                const formDataObj = new FormData(projectForm);
+                
+                const response = await fetch('https://your-worker.your-subdomain.workers.dev', {
+                    method: 'POST',
+                    body: formDataObj
+                });
+                
+                if (response.ok) {
+                    if (status) {
+                        status.textContent = 'Mesajınız başarıyla gönderildi!';
+                        status.className = 'form-status success';
+                        status.style.display = 'block';
+                    }
+                    projectForm.reset();
+                } else {
+                    throw new Error('Failed to send message');
                 }
-                formData.projectType = formData.otherProjectType;
+                
+            } catch (error) {
+                if (status) {
+                    status.textContent = 'Mesaj gönderilirken hata oluştu. Lütfen tekrar deneyin.';
+                    status.className = 'form-status error';
+                    status.style.display = 'block';
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             }
-            
-            // Validate required fields
-            if (!formData.name || !formData.email || !formData.projectType || !formData.message) {
-                alert('Lütfen tüm zorunlu alanları doldurun.');
-                return;
-            }
-            
-            // Open service modal
-            openServiceModal();
         });
     }
     

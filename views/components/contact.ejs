@@ -48,7 +48,7 @@
                     <h3>Proje İletişimi</h3>
                     <p>Projeleriniz için hızlı iletişim</p>
                     
-                    <form id="projectForm" class="project-form compact-form">
+                    <form id="contactForm" class="project-form compact-form">
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="name">Ad Soyad *</label>
@@ -61,41 +61,9 @@
                             </div>
                         </div>
                         
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="projectType">Proje Türü *</label>
-                                <select id="projectType" name="projectType" required>
-                                    <option value="">Seçiniz</option>
-                                    <option value="Siber Güvenlik">Siber Güvenlik</option>
-                                    <option value="Web Geliştirme">Web Geliştirme</option>
-                                    <option value="Mobile Geliştirme">Mobile Geliştirme</option>
-                                    <option value="SaaS Projesi">SaaS Projesi</option>
-                                    <option value="Danışmanlık">Danışmanlık</option>
-                                    <option value="Diğer">Diğer</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="timeline">Zaman Çizelgesi</label>
-                                <select id="timeline" name="timeline">
-                                    <option value="">Seçiniz</option>
-                                    <option value="1-2 Hafta">1-2 Hafta</option>
-                                    <option value="1 Ay">1 Ay</option>
-                                    <option value="2-3 Ay">2-3 Ay</option>
-                                    <option value="3+ Ay">3+ Ay</option>
-                                    <option value="Belirsiz">Belirsiz</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group" id="otherProjectTypeGroup" style="display: none;">
-                            <label for="otherProjectType">Proje Türünüzü Belirtin *</label>
-                            <input type="text" id="otherProjectType" name="otherProjectType" placeholder="Proje türünüzü yazın...">
-                        </div>
-                        
                         <div class="form-group">
-                            <label for="message">Proje Detayları *</label>
-                            <textarea id="message" name="message" rows="3" placeholder="Projenizin detaylarını yazın..." required></textarea>
+                            <label for="message">Mesajınız *</label>
+                            <textarea id="message" name="message" rows="4" placeholder="Mesajınızı yazın..." required></textarea>
                         </div>
                         
                         <div class="form-actions">
@@ -104,6 +72,8 @@
                                 <span>Gönder</span>
                             </button>
                         </div>
+                        
+                        <div class="form-status" id="form-status"></div>
                     </form>
                 </div>
             </div>
