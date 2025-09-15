@@ -2,7 +2,7 @@
   "name": "glitchidea-portfolio",
   "version": "1.0.0",
   "description": "GlitchIdea - Cybersecurity Expert Portfolio Site",
-  "homepage": "https://glitchidea.github.io/glitchidea-website",
+  "homepage": "https://glitchidea.com",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
