@@ -98,6 +98,22 @@ if (fs.existsSync('dist/index.html')) {
   console.log('📄 Copied index.html to root directory');
 }
 
+// Verify critical files exist
+console.log('🔍 Verifying critical files...');
+const criticalFiles = [
+  'dist/css/responsive.css',
+  'dist/js/animations.js',
+  'dist/index.html'
+];
+
+criticalFiles.forEach(file => {
+  if (fs.existsSync(file)) {
+    console.log(`✅ ${file} exists`);
+  } else {
+    console.log(`❌ ${file} missing`);
+  }
+});
+
 console.log('✅ Cloudflare Pages build completed!');
 console.log('📁 Files ready in dist/ directory');
 console.log('📄 index.html copied to root for Cloudflare Pages');
