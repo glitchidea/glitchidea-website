@@ -81,8 +81,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <!-- GlitchIdea Custom Animations -->
+    <link rel="stylesheet" href="./css/animations.css">
     
 
     
@@ -820,8 +820,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="spinner"></div>
     </div>
     
-    <!-- AOS Animation Library -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+    <!-- GlitchIdea Custom Animations -->
+    <script src="./js/glitch-animations.js"></script>
     
     <!-- Custom JavaScript -->
     <script src="./js/main.js"></script>
@@ -834,30 +834,9 @@ document.addEventListener('DOMContentLoaded', () => {
     <script src="./js/blog.js"></script>
     <script src="./js/contact.js"></script>
     
-    <!-- Initialize AOS -->
+    <!-- GlitchIdea Animations Initialized -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof AOS !== 'undefined') {
-                AOS.init({
-                    duration: 800,
-                    easing: 'ease-in-out',
-                    once: true,
-                    offset: 100
-                });
-            } else {
-                // AOS yüklenmediyse tekrar dene
-                setTimeout(function() {
-                    if (typeof AOS !== 'undefined') {
-                        AOS.init({
-                            duration: 800,
-                            easing: 'ease-in-out',
-                            once: true,
-                            offset: 100
-                        });
-                    }
-                }, 1000);
-            }
-        });
+        console.log('🎬 GlitchIdea custom animations loaded!');
     </script>
     
 

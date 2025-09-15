@@ -102,7 +102,9 @@ if (fs.existsSync('dist/index.html')) {
 console.log('🔍 Verifying critical files...');
 const criticalFiles = [
   'dist/css/responsive.css',
+  'dist/css/animations.css',
   'dist/js/animations.js',
+  'dist/js/glitch-animations.js',
   'dist/index.html'
 ];
 

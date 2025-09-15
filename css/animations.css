@@ -1,0 +1,341 @@
+/* ===== GLITCHIDEA CUSTOM ANIMATIONS ===== */
+
+/* Fade In Animation */
+@keyframes glitchFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade Up Animation */
+@keyframes glitchFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade Down Animation */
+@keyframes glitchFadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade Left Animation */
+@keyframes glitchFadeLeft {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Fade Right Animation */
+@keyframes glitchFadeRight {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Scale In Animation */
+@keyframes glitchScaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Slide Up Animation */
+@keyframes glitchSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide Down Animation */
+@keyframes glitchSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide Left Animation */
+@keyframes glitchSlideLeft {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Slide Right Animation */
+@keyframes glitchSlideRight {
+    from {
+        opacity: 0;
+        transform: translateX(-100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Zoom In Animation */
+@keyframes glitchZoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Flip Animation */
+@keyframes glitchFlip {
+    from {
+        opacity: 0;
+        transform: rotateY(-90deg);
+    }
+    to {
+        opacity: 1;
+        transform: rotateY(0deg);
+    }
+}
+
+/* Bounce Animation */
+@keyframes glitchBounce {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== ANIMATION CLASSES ===== */
+
+/* Base animation class */
+.glitch-animate {
+    opacity: 0;
+    animation-fill-mode: both;
+    animation-duration: 0.8s;
+    animation-timing-function: ease-out;
+}
+
+/* Fade animations */
+.glitch-fade-in {
+    animation-name: glitchFadeIn;
+}
+
+.glitch-fade-up {
+    animation-name: glitchFadeUp;
+}
+
+.glitch-fade-down {
+    animation-name: glitchFadeDown;
+}
+
+.glitch-fade-left {
+    animation-name: glitchFadeLeft;
+}
+
+.glitch-fade-right {
+    animation-name: glitchFadeRight;
+}
+
+/* Scale animations */
+.glitch-scale-in {
+    animation-name: glitchScaleIn;
+}
+
+.glitch-zoom-in {
+    animation-name: glitchZoomIn;
+}
+
+/* Slide animations */
+.glitch-slide-up {
+    animation-name: glitchSlideUp;
+}
+
+.glitch-slide-down {
+    animation-name: glitchSlideDown;
+}
+
+.glitch-slide-left {
+    animation-name: glitchSlideLeft;
+}
+
+.glitch-slide-right {
+    animation-name: glitchSlideRight;
+}
+
+/* Special animations */
+.glitch-flip {
+    animation-name: glitchFlip;
+}
+
+.glitch-bounce {
+    animation-name: glitchBounce;
+}
+
+/* ===== DELAY CLASSES ===== */
+.glitch-delay-100 {
+    animation-delay: 0.1s;
+}
+
+.glitch-delay-200 {
+    animation-delay: 0.2s;
+}
+
+.glitch-delay-300 {
+    animation-delay: 0.3s;
+}
+
+.glitch-delay-400 {
+    animation-delay: 0.4s;
+}
+
+.glitch-delay-500 {
+    animation-delay: 0.5s;
+}
+
+.glitch-delay-600 {
+    animation-delay: 0.6s;
+}
+
+/* ===== DURATION CLASSES ===== */
+.glitch-duration-300 {
+    animation-duration: 0.3s;
+}
+
+.glitch-duration-500 {
+    animation-duration: 0.5s;
+}
+
+.glitch-duration-800 {
+    animation-duration: 0.8s;
+}
+
+.glitch-duration-1000 {
+    animation-duration: 1s;
+}
+
+.glitch-duration-1200 {
+    animation-duration: 1.2s;
+}
+
+/* ===== EASING CLASSES ===== */
+.glitch-ease-in {
+    animation-timing-function: ease-in;
+}
+
+.glitch-ease-out {
+    animation-timing-function: ease-out;
+}
+
+.glitch-ease-in-out {
+    animation-timing-function: ease-in-out;
+}
+
+.glitch-ease-bounce {
+    animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ===== RESPONSIVE ANIMATIONS ===== */
+@media (max-width: 768px) {
+    .glitch-animate {
+        animation-duration: 0.6s;
+    }
+    
+    .glitch-delay-200,
+    .glitch-delay-300,
+    .glitch-delay-400,
+    .glitch-delay-500,
+    .glitch-delay-600 {
+        animation-delay: 0.1s;
+    }
+}
+
+/* ===== REDUCED MOTION SUPPORT ===== */
+@media (prefers-reduced-motion: reduce) {
+    .glitch-animate {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ===== ANIMATION TRIGGER CLASSES ===== */
+.glitch-animate-on-scroll {
+    opacity: 0;
+    transition: all 0.8s ease-out;
+}
+
+.glitch-animate-on-scroll.glitch-visible {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+}
+
+/* ===== HOVER ANIMATIONS ===== */
+.glitch-hover-scale:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.glitch-hover-lift:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+
+.glitch-hover-glow:hover {
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+    transition: box-shadow 0.3s ease;
+}
