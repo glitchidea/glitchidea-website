@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const formDataObj = new FormData(projectForm);
                 
-                const response = await fetch('https://your-worker.your-subdomain.workers.dev', {
+                const response = await fetch('https://mail.glitchidea65.workers.dev', {
                     method: 'POST',
                     body: formDataObj
                 });
