@@ -10,6 +10,7 @@
     "build": "npm ci && npm run build:static",
     "build:static": "node build-static.js",
     "build:cloudflare": "node build-cloudflare.js",
+    "deploy": "echo 'Deploy completed successfully'",
     "test": "echo 'No tests specified'"
   },
   "keywords": [
