@@ -6,85 +6,58 @@ function debugLog(step, data) {
     console.log(`[${timestamp}] 🔍 DEBUG STEP ${step}:`, JSON.stringify(data, null, 2));
 }
 
-// Handle ALL HTTP methods for debugging
-export default async function(context) {
-    // Cloudflare Pages Function - alternative export format
-    return await handleRequest(context);
+// Cloudflare Pages Function - Standard Format
+export async function onRequestPost(context) {
+    return await handleEmailPost(context);
 }
 
-// Main request handler
-async function handleRequest(context) {
-    debugLog('START', {
-        step: 'Function entry point',
-        method: context.request.method,
-        url: context.request.url,
-        hasEnv: !!context.env
+export async function onRequestGet(context) {
+    return await handleGetTest(context);
+}
+
+export async function onRequestOptions(context) {
+    return new Response(null, {
+        status: 204,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            'Access-Control-Max-Age': '86400'
+        }
+    });
+}
+
+// GET test handler
+async function handleGetTest(context) {
+    debugLog('GET', { message: 'Function GET test' });
+    
+    // Test environment variables without showing values
+    const envTest = {
+        SMTP_HOST: context.env.SMTP_HOST ? 'EXISTS' : 'MISSING',
+        SMTP_PORT: context.env.SMTP_PORT ? 'EXISTS' : 'MISSING',
+        SMTP_USERNAME: context.env.SMTP_USERNAME ? 'EXISTS' : 'MISSING',
+        SMTP_PASSWORD: context.env.SMTP_PASSWORD ? 'EXISTS' : 'MISSING',
+        TO_EMAIL: context.env.TO_EMAIL ? 'EXISTS' : 'MISSING',
+        FROM_EMAIL: context.env.FROM_EMAIL ? 'EXISTS' : 'MISSING',
+        FROM_NAME: context.env.FROM_NAME ? 'EXISTS' : 'MISSING'
+    };
+    
+    debugLog('ENV_TEST', {
+        step: 'Environment variables test',
+        variables: envTest,
+        totalFound: Object.values(envTest).filter(v => v === 'EXISTS').length,
+        totalExpected: 7
     });
     
-    // Handle OPTIONS for CORS
-    if (context.request.method === 'OPTIONS') {
-        debugLog('OPTIONS', { message: 'Handling CORS preflight' });
-        return new Response(null, {
-            status: 204,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                'Access-Control-Max-Age': '86400'
-            }
-        });
-    }
-    
-    // Handle GET for testing
-    if (context.request.method === 'GET') {
-        debugLog('GET', { message: 'Function is alive' });
-        
-        // Test environment variables without showing values
-        const envTest = {
-            SMTP_HOST: context.env.SMTP_HOST ? 'EXISTS' : 'MISSING',
-            SMTP_PORT: context.env.SMTP_PORT ? 'EXISTS' : 'MISSING',
-            SMTP_USERNAME: context.env.SMTP_USERNAME ? 'EXISTS' : 'MISSING',
-            SMTP_PASSWORD: context.env.SMTP_PASSWORD ? 'EXISTS' : 'MISSING',
-            TO_EMAIL: context.env.TO_EMAIL ? 'EXISTS' : 'MISSING',
-            FROM_EMAIL: context.env.FROM_EMAIL ? 'EXISTS' : 'MISSING',
-            FROM_NAME: context.env.FROM_NAME ? 'EXISTS' : 'MISSING'
-        };
-        
-        debugLog('ENV_TEST', {
-            step: 'Environment variables test',
-            variables: envTest,
-            totalFound: Object.values(envTest).filter(v => v === 'EXISTS').length,
-            totalExpected: 7
-        });
-        
-        return new Response(JSON.stringify({
-            success: true,
-            message: '✅ Cloudflare Function is working!',
-            timestamp: new Date().toISOString(),
-            method: 'GET',
-            environmentTest: envTest,
-            status: Object.values(envTest).filter(v => v === 'EXISTS').length === 7 ? 'ALL_VARS_FOUND' : 'MISSING_VARS'
-        }), {
-            status: 200,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
-        });
-    }
-    
-    // Handle POST for email sending
-    if (context.request.method === 'POST') {
-        return await handleEmailPost(context);
-    }
-    
-    // Method not allowed
-    debugLog('ERROR', { message: 'Method not allowed', method: context.request.method });
     return new Response(JSON.stringify({
-        success: false,
-        message: `Method ${context.request.method} not allowed`
+        success: true,
+        message: '✅ Cloudflare Function is working!',
+        timestamp: new Date().toISOString(),
+        method: 'GET',
+        environmentTest: envTest,
+        status: Object.values(envTest).filter(v => v === 'EXISTS').length === 7 ? 'ALL_VARS_FOUND' : 'MISSING_VARS'
     }), {
-        status: 405,
+        status: 200,
         headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
@@ -476,6 +449,3 @@ Gönderim Tarihi: ${currentDate}
 💡 Hızlı Yanıt: ${senderEmail} adresine "Re: ${subject}" konusuyla yanıt verebilirsiniz.
     `;
 }
-
-// Named exports as alternative
-export const onRequest = handleRequest;
