@@ -153,7 +153,7 @@ function loadContactEmail() {
 // Email sending functionality
 async function sendEmailMessage(subject, message, senderEmail) {
     try {
-        const response = await fetch('/send-email', {
+        const response = await fetch('/functions/send-email', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
