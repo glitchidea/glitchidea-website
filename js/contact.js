@@ -13,6 +13,7 @@ class ContactComponent {
         
         this.loadSocialLinks();
         this.initAnimations();
+        this.initContactForm();
     }
     
     async loadSocialLinks() {
@@ -313,4 +314,78 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+});
+
+// Contact Form Handling
+function initContactForm() {
+    const form = document.getElementById('contactForm');
+    const status = document.getElementById('form-status');
+    
+    if (!form || !status) return;
+    
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = form.querySelector('#sendForm');
+        const originalText = submitBtn.innerHTML;
+        
+        // Loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
+        status.style.display = 'none';
+        
+        try {
+            const formData = new FormData(form);
+            const data = {
+                subject: formData.get('subject'),
+                message: formData.get('message'),
+                senderEmail: formData.get('senderEmail')
+            };
+            
+            // Validation
+            if (!data.subject.trim() || !data.message.trim() || !data.senderEmail.trim()) {
+                throw new Error('Lütfen tüm alanları doldurun!');
+            }
+            
+            // Email formatını kontrol et
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(data.senderEmail)) {
+                throw new Error('Geçerli bir email adresi giriniz!');
+            }
+            
+            // Cloudflare Worker'a gönder
+            const response = await fetch('https://mail.glitchidea65.workers.dev', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                status.textContent = '✅ Mesaj başarıyla gönderildi!';
+                status.className = 'form-status success';
+                status.style.display = 'block';
+                form.reset();
+            } else {
+                throw new Error(result.message || 'Mesaj gönderilirken hata oluştu');
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            status.textContent = '❌ ' + error.message;
+            status.className = 'form-status error';
+            status.style.display = 'block';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
+}
+
+// Initialize contact form when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initContactForm();
 });
