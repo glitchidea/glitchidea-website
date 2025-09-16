@@ -1,26 +1,178 @@
 // Cloudflare Pages Function for email sending
-export async function onRequestPost(context) {
+
+// Debug function to log everything
+function debugLog(step, data) {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] 🔍 DEBUG STEP ${step}:`, JSON.stringify(data, null, 2));
+}
+
+// Handle ALL HTTP methods for debugging
+export async function onRequest(context) {
+    debugLog('START', {
+        step: 'Function entry point',
+        method: context.request.method,
+        url: context.request.url,
+        hasEnv: !!context.env
+    });
+    
+    // Handle OPTIONS for CORS
+    if (context.request.method === 'OPTIONS') {
+        debugLog('OPTIONS', { message: 'Handling CORS preflight' });
+        return new Response(null, {
+            status: 204,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Max-Age': '86400'
+            }
+        });
+    }
+    
+    // Handle GET for testing
+    if (context.request.method === 'GET') {
+        debugLog('GET', { message: 'Function is alive' });
+        
+        // Test environment variables without showing values
+        const envTest = {
+            SMTP_HOST: context.env.SMTP_HOST ? 'EXISTS' : 'MISSING',
+            SMTP_PORT: context.env.SMTP_PORT ? 'EXISTS' : 'MISSING',
+            SMTP_USERNAME: context.env.SMTP_USERNAME ? 'EXISTS' : 'MISSING',
+            SMTP_PASSWORD: context.env.SMTP_PASSWORD ? 'EXISTS' : 'MISSING',
+            TO_EMAIL: context.env.TO_EMAIL ? 'EXISTS' : 'MISSING',
+            FROM_EMAIL: context.env.FROM_EMAIL ? 'EXISTS' : 'MISSING',
+            FROM_NAME: context.env.FROM_NAME ? 'EXISTS' : 'MISSING'
+        };
+        
+        debugLog('ENV_TEST', {
+            step: 'Environment variables test',
+            variables: envTest,
+            totalFound: Object.values(envTest).filter(v => v === 'EXISTS').length,
+            totalExpected: 7
+        });
+        
+        return new Response(JSON.stringify({
+            success: true,
+            message: '✅ Cloudflare Function is working!',
+            timestamp: new Date().toISOString(),
+            method: 'GET',
+            environmentTest: envTest,
+            status: Object.values(envTest).filter(v => v === 'EXISTS').length === 7 ? 'ALL_VARS_FOUND' : 'MISSING_VARS'
+        }), {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        });
+    }
+    
+    // Handle POST for email sending
+    if (context.request.method === 'POST') {
+        return await handleEmailPost(context);
+    }
+    
+    // Method not allowed
+    debugLog('ERROR', { message: 'Method not allowed', method: context.request.method });
+    return new Response(JSON.stringify({
+        success: false,
+        message: `Method ${context.request.method} not allowed`
+    }), {
+        status: 405,
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        }
+    });
+}
+
+// Separate function for handling POST requests
+async function handleEmailPost(context) {
     const { request, env } = context;
     
-    console.log('🚀 Cloudflare Function started');
-    console.log('📧 Request method:', request.method);
-    console.log('📧 Request URL:', request.url);
+    debugLog('POST_START', {
+        step: 'POST handler started',
+        contentType: request.headers.get('content-type'),
+        hasBody: !!request.body
+    });
     
     try {
         // Parse request body
+        debugLog('PARSE_BODY', { step: 'Parsing request body' });
         const { subject, message, senderEmail } = await request.json();
         
-        console.log('📧 Cloudflare Function called');
-        console.log('📧 Request data:', { subject, senderEmail, messageLength: message?.length });
-        console.log('📧 Environment variables check:', {
-            hasUsername: !!env.SMTP_USERNAME,
-            hasPassword: !!env.SMTP_PASSWORD,
-            hasToEmail: !!env.TO_EMAIL
+        debugLog('BODY_PARSED', {
+            step: 'Request body parsed successfully',
+            subject: subject,
+            senderEmail: senderEmail,
+            messageLength: message?.length
         });
         
+        // Detailed environment variables check
+        const envStatus = {
+            SMTP_HOST: env.SMTP_HOST ? 'EXISTS' : 'MISSING',
+            SMTP_PORT: env.SMTP_PORT ? 'EXISTS' : 'MISSING', 
+            SMTP_USERNAME: env.SMTP_USERNAME ? 'EXISTS' : 'MISSING',
+            SMTP_PASSWORD: env.SMTP_PASSWORD ? 'EXISTS' : 'MISSING',
+            TO_EMAIL: env.TO_EMAIL ? 'EXISTS' : 'MISSING',
+            FROM_EMAIL: env.FROM_EMAIL ? 'EXISTS' : 'MISSING',
+            FROM_NAME: env.FROM_NAME ? 'EXISTS' : 'MISSING'
+        };
+        
+        const missingVars = Object.entries(envStatus).filter(([key, status]) => status === 'MISSING');
+        
+        debugLog('ENV_CHECK', {
+            step: 'Environment variables detailed check',
+            envStatus: envStatus,
+            foundCount: Object.values(envStatus).filter(v => v === 'EXISTS').length,
+            expectedCount: 7,
+            missingVars: missingVars.map(([key]) => key),
+            allFound: missingVars.length === 0
+        });
+        
+        // Check if environment variables are configured
+        if (!env.SMTP_USERNAME || !env.SMTP_PASSWORD) {
+            debugLog('ENV_MISSING', {
+                step: 'Critical environment variables missing',
+                hasUsername: !!env.SMTP_USERNAME,
+                hasPassword: !!env.SMTP_PASSWORD,
+                message: 'Email servisi yapılandırılmamış'
+            });
+            
+            return new Response(JSON.stringify({
+                success: false,
+                message: 'Email servisi yapılandırılmamış',
+                debug: {
+                    missingVariables: missingVars.map(([key]) => key),
+                    foundVariables: Object.entries(envStatus).filter(([key, status]) => status === 'EXISTS').map(([key]) => key)
+                }
+            }), {
+                status: 500,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                }
+            });
+        }
+        
         // Validate required fields
+        debugLog('VALIDATION', {
+            step: 'Validating required fields',
+            hasSubject: !!subject,
+            hasMessage: !!message,
+            hasSenderEmail: !!senderEmail
+        });
+        
         if (!subject || !message || !senderEmail) {
-            console.log('❌ Missing required fields');
+            debugLog('VALIDATION_FAILED', {
+                step: 'Validation failed - missing fields',
+                subject: subject,
+                message: message ? 'present' : 'missing',
+                senderEmail: senderEmail
+            });
+            
             return new Response(JSON.stringify({
                 success: false,
                 message: 'Tüm alanlar doldurulmalıdır'
@@ -44,23 +196,6 @@ export async function onRequestPost(context) {
                 message: 'Geçerli bir email adresi giriniz'
             }), {
                 status: 400,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-                    'Access-Control-Allow-Headers': 'Content-Type',
-                }
-            });
-        }
-        
-        // Check environment variables
-        if (!env.SMTP_USERNAME || !env.SMTP_PASSWORD) {
-            console.log('❌ Missing SMTP credentials');
-            return new Response(JSON.stringify({
-                success: false,
-                message: 'Email servisi yapılandırılmamış'
-            }), {
-                status: 500,
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
@@ -112,10 +247,20 @@ export async function onRequestPost(context) {
         }
         
     } catch (error) {
-        console.error('❌ Function error:', error);
+        debugLog('ERROR', {
+            step: 'Function error caught',
+            errorName: error.name,
+            errorMessage: error.message,
+            errorStack: error.stack
+        });
+        
         return new Response(JSON.stringify({
             success: false,
-            message: `Email gönderme hatası: ${error.message}`
+            message: `Email gönderme hatası: ${error.message}`,
+            debug: {
+                error: error.name,
+                stack: error.stack?.split('\n')[0] // First line of stack trace
+            }
         }), {
             status: 500,
             headers: {
@@ -128,17 +273,6 @@ export async function onRequestPost(context) {
     }
 }
 
-// Handle OPTIONS request for CORS
-export async function onRequestOptions() {
-    return new Response(null, {
-        status: 204,
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-        }
-    });
-}
 
 // Send email via external API (like EmailJS, SendGrid, or similar)
 async function sendEmailViaAPI(emailData, env) {
