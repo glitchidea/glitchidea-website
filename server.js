@@ -9,7 +9,7 @@ const nodemailer = require('nodemailer');
 require('dotenv').config({ path: './config.env' });
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 9000;
 
 // Security middleware
 app.use(helmet({
@@ -33,7 +33,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 
 // CORS middleware
-app.use(cors());
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'http://localhost:8080', 
+        'https://glitchidea.com',
+        'https://*.glitchidea.com',
+        ...(process.env.ALLOWED_ORIGINS?.split(',') || [])
+    ],
+    credentials: true
+}));
 
 // Body parser middleware
 app.use(express.json());
@@ -380,7 +389,7 @@ const createEmailContent = (subject, message, senderEmail) => {
                 </a>
                 <div class="divider"></div>
                 <p class="footer-text">
-                    Bu mesaj glitchidea65@gmail.com adresinden gönderilmiştir.<br>
+                    Bu mesaj ${process.env.SMTP_USERNAME || 'glitchidea65@gmail.com'} adresinden gönderilmiştir.<br>
                     Gönderim Tarihi: ${currentDate}
                 </p>
             </div>
@@ -397,7 +406,7 @@ Mesaj:
 ${message}
 
 ---
-Bu mesaj glitchidea65@gmail.com adresinden gönderilmiştir.
+Bu mesaj ${process.env.SMTP_USERNAME || 'glitchidea65@gmail.com'} adresinden gönderilmiştir.
 Gönderim Tarihi: ${currentDate}
 
 💡 Hızlı Yanıt: ${senderEmail} adresine "Re: ${subject}" konusuyla yanıt verebilirsiniz.
@@ -439,12 +448,12 @@ app.post('/send-email', async (req, res) => {
 
         // Email seçenekleri
         const mailOptions = {
-            from: `${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`,
-            to: process.env.TO_EMAIL,
+            from: process.env.SMTP_USERNAME || process.env.FROM_EMAIL || 'glitchidea65@gmail.com',
+            to: process.env.TO_EMAIL || 'info@glitchidea.com',
             subject: formattedSubject,
             text: textContent,
             html: htmlContent,
-            replyTo: process.env.FROM_EMAIL
+            replyTo: process.env.SMTP_USERNAME || process.env.FROM_EMAIL || 'glitchidea65@gmail.com'
         };
 
         // Email gönder
@@ -482,12 +491,12 @@ app.post('/test-email', async (req, res) => {
         const transporter = createTransporter();
 
         const mailOptions = {
-            from: `${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`,
-            to: process.env.TO_EMAIL,
+            from: process.env.SMTP_USERNAME || process.env.FROM_EMAIL || 'glitchidea65@gmail.com',
+            to: process.env.TO_EMAIL || 'info@glitchidea.com',
             subject: formattedSubject,
             text: textContent,
             html: htmlContent,
-            replyTo: process.env.FROM_EMAIL
+            replyTo: process.env.SMTP_USERNAME || process.env.FROM_EMAIL || 'glitchidea65@gmail.com'
         };
 
         const info = await transporter.sendMail(mailOptions);

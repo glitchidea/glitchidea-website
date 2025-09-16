@@ -77,8 +77,8 @@ class ServicesComponent {
             </div>
             
             <div class="service-card-footer">
-                <a href="#contact" class="service-cta">
-                    <span>İletişim</span>
+                <a href="#projects" class="service-cta">
+                    <span>Projeleri Gör</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -352,8 +352,8 @@ class ServicesComponent {
                 </div>
                 
                 <div class="service-card-footer">
-                    <a href="${data.ctaLink || '#contact'}" class="service-cta">
-                        <span>${data.ctaText || 'İletişim'}</span>
+                    <a href="${data.ctaLink || '#projects'}" class="service-cta">
+                        <span>${data.ctaText || 'Projeleri Gör'}</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
