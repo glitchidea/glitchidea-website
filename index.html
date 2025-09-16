@@ -493,129 +493,40 @@
                 </div>
             </div>
             
-            <!-- Project Form Card - Right Side -->
+            <!-- Email Contact Form - Right Side -->
             <div class="contact-cta-card contact-form-side" data-aos="fade-left" data-aos-delay="200">
                 <div class="cta-content">
-                    <h3>Proje İletişimi</h3>
-                    <p>Projeleriniz için hızlı iletişim</p>
+                    <h3>💌 İletişime Geç</h3>
+                    <p>Hızlı iletişim için mesaj gönderin</p>
                     
-                    <form id="projectForm" class="project-form compact-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="name">Ad Soyad *</label>
-                                <input type="text" id="name" name="name" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="email">E-posta *</label>
-                                <input type="email" id="email" name="email" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="projectType">Proje Türü *</label>
-                                <select id="projectType" name="projectType" required>
-                                    <option value="">Seçiniz</option>
-                                    <option value="Siber Güvenlik">Siber Güvenlik</option>
-                                    <option value="Web Geliştirme">Web Geliştirme</option>
-                                    <option value="Mobile Geliştirme">Mobile Geliştirme</option>
-                                    <option value="SaaS Projesi">SaaS Projesi</option>
-                                    <option value="Danışmanlık">Danışmanlık</option>
-                                    <option value="Diğer">Diğer</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="timeline">Zaman Çizelgesi</label>
-                                <select id="timeline" name="timeline">
-                                    <option value="">Seçiniz</option>
-                                    <option value="1-2 Hafta">1-2 Hafta</option>
-                                    <option value="1 Ay">1 Ay</option>
-                                    <option value="2-3 Ay">2-3 Ay</option>
-                                    <option value="3+ Ay">3+ Ay</option>
-                                    <option value="Belirsiz">Belirsiz</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group" id="otherProjectTypeGroup" style="display: none;">
-                            <label for="otherProjectType">Proje Türünüzü Belirtin *</label>
-                            <input type="text" id="otherProjectType" name="otherProjectType" placeholder="Proje türünüzü yazın...">
+                    <form id="emailContactForm" class="email-contact-form compact-form">
+                        <div class="form-group">
+                            <label for="emailSubject">Konu *</label>
+                            <input type="text" id="emailSubject" name="subject" required placeholder="Mesaj konunuz...">
                         </div>
                         
                         <div class="form-group">
-                            <label for="message">Proje Detayları *</label>
-                            <textarea id="message" name="message" rows="3" placeholder="Projenizin detaylarını yazın..." required></textarea>
+                            <label for="emailMessage">Mesajınız *</label>
+                            <textarea id="emailMessage" name="message" rows="4" required placeholder="Mesajınızı buraya yazın..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="senderEmail">E-posta Adresiniz *</label>
+                            <input type="email" id="senderEmail" name="senderEmail" required placeholder="ornek@email.com">
                         </div>
                         
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary" id="sendForm">
+                            <button type="submit" class="btn btn-primary" id="sendEmailBtn">
                                 <i class="fas fa-paper-plane"></i>
-                                <span>Gönder</span>
+                                <span>Mesaj Gönder</span>
                             </button>
                         </div>
+                        
+                        <div id="emailStatus" class="email-status"></div>
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <!-- Mail Service Selection Modal -->
-    <div id="serviceModal" class="mail-modal">
-        <div class="mail-modal-content">
-            <div class="mail-modal-header">
-                <h3>E-posta Servisi Seçin</h3>
-                <button class="mail-modal-close" id="closeServiceModal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
             
-            <div class="mail-modal-body">
-                <p>Hangi e-posta servisini kullanmak istiyorsunuz?</p>
-                
-                <div class="mail-services-grid">
-                    <button class="mail-service-btn" data-service="gmail">
-                        <div class="mail-service-icon">
-                            <i class="fab fa-google"></i>
-                        </div>
-                        <div class="mail-service-info">
-                            <h4>Gmail</h4>
-                            <p>Google Mail</p>
-                        </div>
-                    </button>
-                    
-                    <button class="mail-service-btn" data-service="outlook">
-                        <div class="mail-service-icon">
-                            <i class="fab fa-microsoft"></i>
-                        </div>
-                        <div class="mail-service-info">
-                            <h4>Outlook</h4>
-                            <p>Microsoft Mail</p>
-                        </div>
-                    </button>
-                    
-                    <button class="mail-service-btn" data-service="yahoo">
-                        <div class="mail-service-icon">
-                            <i class="fab fa-yahoo"></i>
-                        </div>
-                        <div class="mail-service-info">
-                            <h4>Yahoo Mail</h4>
-                            <p>Yahoo Mail</p>
-                        </div>
-                    </button>
-                    
-                    <button class="mail-service-btn" data-service="default">
-                        <div class="mail-service-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="mail-service-info">
-                            <h4>Varsayılan</h4>
-                            <p>Sistem e-posta uygulaması</p>
-                        </div>
-                    </button>
-                </div>
-            </div>
         </div>
     </div>
 </section>

@@ -203,3 +203,5 @@ docker-compose.yml
 # Local development files
 local/
 dev/
+
+tester/

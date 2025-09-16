@@ -253,63 +253,6 @@ async function loadFilteredProjectsInModal(category) {
     }
 }
 
-// Contact form handling
-function initContactForm() {
-    const contactForm = document.getElementById('contact-form');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const submitButton = this.querySelector('button[type="submit"]');
-            const originalText = submitButton.innerHTML;
-            
-            // Disable submit button
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            
-            try {
-                // Create mailto link
-                const name = formData.get('name');
-                const email = formData.get('email');
-                const projectType = formData.get('projectType');
-                const timeline = formData.get('timeline');
-                const message = formData.get('message');
-                
-                const subject = `Proje İletişimi - ${projectType || 'Genel'}`;
-                const body = `Merhaba,
-
-Proje detayları:
-- Ad Soyad: ${name}
-- E-posta: ${email}
-- Proje Türü: ${projectType || 'Belirtilmemiş'}
-- Zaman Çizelgesi: ${timeline || 'Belirtilmemiş'}
-
-Proje Detayları:
-${message}
-
-İyi günler.`;
-                
-                const mailtoLink = `mailto:info@glitchidea.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                
-                // Open mailto link
-                window.location.href = mailtoLink;
-                
-                showNotification('E-posta uygulamanız açılıyor...', 'success');
-                this.reset();
-                
-            } catch (error) {
-                console.error('Error creating mailto link:', error);
-                showNotification('E-posta oluşturulamadı. Lütfen manuel olarak info@glitchidea.com adresine yazın.', 'error');
-            } finally {
-                // Re-enable submit button
-                submitButton.disabled = false;
-                submitButton.innerHTML = originalText;
-            }
-        });
-    }
-}
 
 // Show notification
 function showNotification(message, type = 'info') {
@@ -342,5 +285,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize components
     initProjectsModal();
     initModalProjectFilters();
-    initContactForm();
 });

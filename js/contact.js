@@ -135,12 +135,6 @@ window.Contact = {
     }
 };
 
-// Mail Modal Functions
-
-
-let formData = {};
-let contactEmail = '';
-
 // Load contact email from social.json
 function loadContactEmail() {
     fetch('./api/social.json')
@@ -148,8 +142,7 @@ function loadContactEmail() {
         .then(data => {
             const emailItem = data.social_links.find(item => item.type === 'contact');
             if (emailItem) {
-                contactEmail = emailItem.url;
-                document.getElementById('contact-email').textContent = contactEmail;
+                document.getElementById('contact-email').textContent = emailItem.url;
             }
         })
         .catch(error => {
@@ -157,160 +150,114 @@ function loadContactEmail() {
         });
 }
 
-function openMailService(service) {
-    if (!contactEmail) {
-        alert('E-posta adresi yüklenemedi. Lütfen sayfayı yenileyin.');
-        return;
+// Email sending functionality
+async function sendEmailMessage(subject, message, senderEmail) {
+    try {
+        const response = await fetch('/send-email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                subject: subject,
+                message: message,
+                senderEmail: senderEmail
+            })
+        });
+
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.message);
+        }
+        
+        return data;
+    } catch (error) {
+        throw new Error(`Email gönderme hatası: ${error.message}`);
     }
-    
-    const email = contactEmail;
-    const subject = `Proje Teklifi - ${formData.projectType || 'Genel'}`;
-    
-    // Create email body from form data
-    let body = `Merhaba,\n\n`;
-    body += `Adım: ${formData.name}\n`;
-    body += `E-posta: ${formData.email}\n\n`;
-    
-    if (formData.projectType) {
-        body += `Proje Türü: ${formData.projectType}\n`;
-    }
-    
-    if (formData.budget) {
-        body += `Bütçe: ${formData.budget}\n`;
-    }
-    
-    if (formData.timeline) {
-        body += `Zaman Çizelgesi: ${formData.timeline}\n`;
-    }
-    
-    body += `\nProje Detayları:\n${formData.message}\n\n`;
-    body += `Saygılarımla,\n${formData.name}`;
-    
-    let mailUrl;
-    
-    switch(service) {
-        case 'gmail':
-            mailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            break;
-        case 'outlook':
-            mailUrl = `https://outlook.live.com/mail/0/deeplink/compose?to=${email}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            break;
-        case 'yahoo':
-            mailUrl = `https://compose.mail.yahoo.com/?to=${email}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            break;
-        case 'default':
-        default:
-            mailUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            break;
-    }
-    
-    // Close service modal first
-    closeServiceModal();
-    
-    // Open mail service
-    window.open(mailUrl, '_blank');
 }
 
-function closeServiceModal() {
-    const modal = document.getElementById('serviceModal');
-    modal.classList.remove('show');
-    document.body.style.overflow = 'auto';
+// Show status message
+function showEmailStatus(message, type = 'info') {
+    const statusDiv = document.getElementById('emailStatus');
+    if (!statusDiv) return;
+    
+    statusDiv.textContent = message;
+    statusDiv.className = `email-status ${type}`;
+    statusDiv.classList.add('show');
+    
+    // Auto hide after 5 seconds for success messages
+    if (type === 'success') {
+        setTimeout(() => {
+            statusDiv.classList.remove('show');
+        }, 5000);
+    }
 }
 
-function openServiceModal() {
-    const modal = document.getElementById('serviceModal');
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
+// Initialize email contact form
+function initEmailContactForm() {
+    const emailForm = document.getElementById('emailContactForm');
+    const sendBtn = document.getElementById('sendEmailBtn');
+    
+    if (!emailForm || !sendBtn) return;
+    
+    emailForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Get form data
+        const formData = new FormData(emailForm);
+        const subject = formData.get('subject')?.trim();
+        const message = formData.get('message')?.trim();
+        const senderEmail = formData.get('senderEmail')?.trim();
+        
+        // Validate required fields
+        if (!subject || !message || !senderEmail) {
+            showEmailStatus('Lütfen tüm alanları doldurun.', 'error');
+            return;
+        }
+        
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(senderEmail)) {
+            showEmailStatus('Lütfen geçerli bir e-posta adresi girin.', 'error');
+            return;
+        }
+        
+        // Show loading state
+        sendBtn.classList.add('loading');
+        sendBtn.disabled = true;
+        const originalText = sendBtn.innerHTML;
+        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Gönderiliyor...</span>';
+        
+        showEmailStatus('Mesajınız gönderiliyor...', 'loading');
+        
+        try {
+            // Send email
+            const result = await sendEmailMessage(subject, message, senderEmail);
+            
+            // Show success message
+            showEmailStatus('✅ Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağım.', 'success');
+            
+            // Reset form
+            emailForm.reset();
+            
+        } catch (error) {
+            console.error('Email sending error:', error);
+            showEmailStatus(`❌ ${error.message}`, 'error');
+        } finally {
+            // Reset button state
+            sendBtn.classList.remove('loading');
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = originalText;
+        }
+    });
 }
 
-// Close modal when clicking outside
+// Initialize contact email loading when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    const serviceModal = document.getElementById('serviceModal');
-    const closeServiceButton = document.getElementById('closeServiceModal');
-    const projectForm = document.getElementById('projectForm');
-    const serviceButtons = document.querySelectorAll('.mail-service-btn');
-    const projectTypeSelect = document.getElementById('projectType');
-    const otherProjectTypeGroup = document.getElementById('otherProjectTypeGroup');
-    const otherProjectTypeInput = document.getElementById('otherProjectType');
-    
     // Load contact email
     loadContactEmail();
     
-    // Close service modal
-    if (closeServiceButton) {
-        closeServiceButton.addEventListener('click', closeServiceModal);
-    }
-    
-    // Handle project type change
-    if (projectTypeSelect) {
-        projectTypeSelect.addEventListener('change', () => {
-            if (projectTypeSelect.value === 'Diğer') {
-                otherProjectTypeGroup.style.display = 'block';
-                otherProjectTypeGroup.classList.add('show');
-                otherProjectTypeInput.required = true;
-            } else {
-                otherProjectTypeGroup.classList.remove('show');
-                setTimeout(() => {
-                    otherProjectTypeGroup.style.display = 'none';
-                }, 300);
-                otherProjectTypeInput.required = false;
-                otherProjectTypeInput.value = '';
-            }
-        });
-    }
-    
-    // Handle form submission
-    if (projectForm) {
-        projectForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Get form data
-            const formDataObj = new FormData(projectForm);
-            formData = Object.fromEntries(formDataObj);
-            
-            // Handle "Diğer" project type
-            if (formData.projectType === 'Diğer') {
-                if (!formData.otherProjectType) {
-                    alert('Lütfen proje türünüzü belirtin.');
-                    return;
-                }
-                formData.projectType = formData.otherProjectType;
-            }
-            
-            // Validate required fields
-            if (!formData.name || !formData.email || !formData.projectType || !formData.message) {
-                alert('Lütfen tüm zorunlu alanları doldurun.');
-                return;
-            }
-            
-            // Open service modal
-            openServiceModal();
-        });
-    }
-    
-    // Service buttons
-    serviceButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const service = button.getAttribute('data-service');
-            openMailService(service);
-        });
-    });
-    
-    // Close service modal when clicking outside
-    if (serviceModal) {
-        serviceModal.addEventListener('click', (e) => {
-            if (e.target === serviceModal) {
-                closeServiceModal();
-            }
-        });
-    }
-    
-    // Close service modal with Escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            if (serviceModal && serviceModal.classList.contains('show')) {
-                closeServiceModal();
-            }
-        }
-    });
+    // Initialize email contact form
+    initEmailContactForm();
 });
