@@ -92,6 +92,21 @@ if (fs.existsSync('images')) {
   copyRecursive('images', 'dist/images');
 }
 
+// Copy functions to dist/functions (Cloudflare Functions)
+if (fs.existsSync('functions')) {
+  if (!fs.existsSync('dist/functions')) {
+    fs.mkdirSync('dist/functions', { recursive: true });
+  }
+  copyRecursive('functions', 'dist/functions');
+  console.log('📧 Copied Cloudflare Functions to dist/functions');
+}
+
+// Copy functions to root for Cloudflare Pages (they expect it in root)
+if (fs.existsSync('functions')) {
+  // Functions already exist in root, just ensure they're there
+  console.log('📧 Functions directory exists in root for Cloudflare Pages');
+}
+
 // Create a simple index.html in root for Cloudflare Pages
 if (fs.existsSync('dist/index.html')) {
   fs.copyFileSync('dist/index.html', 'index.html');
@@ -105,7 +120,8 @@ const criticalFiles = [
   'dist/css/animations.css',
   'dist/js/animations.js',
   'dist/js/glitch-animations.js',
-  'dist/index.html'
+  'dist/index.html',
+  'functions/send-email.js'
 ];
 
 criticalFiles.forEach(file => {
