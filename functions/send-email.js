@@ -1,6 +1,10 @@
-// Cloudflare Function for email sending
+// Cloudflare Pages Function for email sending
 export async function onRequestPost(context) {
     const { request, env } = context;
+    
+    console.log('🚀 Cloudflare Function started');
+    console.log('📧 Request method:', request.method);
+    console.log('📧 Request URL:', request.url);
     
     try {
         // Parse request body
@@ -8,6 +12,11 @@ export async function onRequestPost(context) {
         
         console.log('📧 Cloudflare Function called');
         console.log('📧 Request data:', { subject, senderEmail, messageLength: message?.length });
+        console.log('📧 Environment variables check:', {
+            hasUsername: !!env.SMTP_USERNAME,
+            hasPassword: !!env.SMTP_PASSWORD,
+            hasToEmail: !!env.TO_EMAIL
+        });
         
         // Validate required fields
         if (!subject || !message || !senderEmail) {
