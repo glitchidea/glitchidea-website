@@ -7,7 +7,13 @@ function debugLog(step, data) {
 }
 
 // Handle ALL HTTP methods for debugging
-export async function onRequest(context) {
+export default async function(context) {
+    // Cloudflare Pages Function - alternative export format
+    return await handleRequest(context);
+}
+
+// Main request handler
+async function handleRequest(context) {
     debugLog('START', {
         step: 'Function entry point',
         method: context.request.method,
@@ -470,3 +476,6 @@ Gönderim Tarihi: ${currentDate}
 💡 Hızlı Yanıt: ${senderEmail} adresine "Re: ${subject}" konusuyla yanıt verebilirsiniz.
     `;
 }
+
+// Named exports as alternative
+export const onRequest = handleRequest;
