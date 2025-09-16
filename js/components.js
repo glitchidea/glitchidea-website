@@ -253,7 +253,7 @@ async function loadFilteredProjectsInModal(category) {
     }
 }
 
-// Contact form handling with SMTP
+// Contact form handling
 function initContactForm() {
     const contactForm = document.getElementById('contact-form');
     
@@ -263,184 +263,51 @@ function initContactForm() {
             
             const formData = new FormData(this);
             const submitButton = this.querySelector('button[type="submit"]');
-            const statusMessage = document.getElementById('status-message');
+            const originalText = submitButton.innerHTML;
             
-            // Get form data
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const projectType = formData.get('projectType');
-            const timeline = formData.get('timeline');
-            const projectDetail = formData.get('projectDetail');
-            const message = formData.get('message');
-            
-            // Validation
-            if (!name || !email || !projectType || !projectDetail || !message) {
-                showStatusMessage('Lütfen tüm zorunlu alanları doldurun!', 'error');
-                return;
-            }
-            
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showStatusMessage('Geçerli bir email adresi giriniz!', 'error');
-                return;
-            }
-            
-            // Set loading state
-            setFormLoading(true, submitButton);
-            hideStatusMessage();
+            // Disable submit button
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             
             try {
-                // Prepare email content
-                const subject = `Proje İletişimi - ${projectType}`;
-                const emailMessage = `Merhaba,
+                // Create mailto link
+                const name = formData.get('name');
+                const email = formData.get('email');
+                const projectType = formData.get('projectType');
+                const timeline = formData.get('timeline');
+                const message = formData.get('message');
+                
+                const subject = `Proje İletişimi - ${projectType || 'Genel'}`;
+                const body = `Merhaba,
 
-Yeni proje iletişimi:
+Proje detayları:
+- Ad Soyad: ${name}
+- E-posta: ${email}
+- Proje Türü: ${projectType || 'Belirtilmemiş'}
+- Zaman Çizelgesi: ${timeline || 'Belirtilmemiş'}
 
-📋 Proje Bilgileri:
-• Ad Soyad: ${name}
-• E-posta: ${email}
-• Proje Türü: ${projectType}
-• Proje Detayı: ${projectDetail}
-• Zaman Çizelgesi: ${timeline || 'Belirtilmemiş'}
-
-📝 Proje Açıklaması:
+Proje Detayları:
 ${message}
-
----
-Bu mesaj https://glitchidea.com proje iletişim formu üzerinden gönderilmiştir.
-Tarih: ${new Date().toLocaleString('tr-TR')}
 
 İyi günler.`;
                 
-                // Send email via SMTP
-                const response = await fetch('/send-email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        subject: subject,
-                        message: emailMessage,
-                        senderEmail: email
-                    })
-                });
+                const mailtoLink = `mailto:info@glitchidea.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                 
-                const result = await response.json();
+                // Open mailto link
+                window.location.href = mailtoLink;
                 
-                if (result.success) {
-                    showStatusMessage('✅ Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.', 'success');
-                    this.reset();
-                } else {
-                    showStatusMessage(`❌ Hata: ${result.message}`, 'error');
-                }
+                showNotification('E-posta uygulamanız açılıyor...', 'success');
+                this.reset();
                 
             } catch (error) {
-                console.error('Email gönderme hatası:', error);
-                showStatusMessage('❌ Bağlantı hatası! Lütfen tekrar deneyin veya doğrudan info@glitchidea.com adresine yazın.', 'error');
+                console.error('Error creating mailto link:', error);
+                showNotification('E-posta oluşturulamadı. Lütfen manuel olarak info@glitchidea.com adresine yazın.', 'error');
             } finally {
-                setFormLoading(false, submitButton);
+                // Re-enable submit button
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
             }
         });
-    }
-}
-
-// Set form loading state
-function setFormLoading(loading, submitButton) {
-    const btnText = submitButton.querySelector('.btn-text');
-    const btnLoading = submitButton.querySelector('.btn-loading');
-    
-    if (loading) {
-        submitButton.disabled = true;
-        submitButton.classList.add('loading');
-        if (btnText) btnText.style.display = 'none';
-        if (btnLoading) btnLoading.style.display = 'flex';
-    } else {
-        submitButton.disabled = false;
-        submitButton.classList.remove('loading');
-        if (btnText) btnText.style.display = 'flex';
-        if (btnLoading) btnLoading.style.display = 'none';
-    }
-}
-
-// Show status message
-function showStatusMessage(message, type) {
-    const statusMessage = document.getElementById('status-message');
-    if (statusMessage) {
-        statusMessage.textContent = message;
-        statusMessage.className = `status-message ${type}`;
-        statusMessage.style.display = 'block';
-        
-        // Auto hide success messages after 5 seconds
-        if (type === 'success') {
-            setTimeout(() => {
-                hideStatusMessage();
-            }, 5000);
-        }
-    }
-}
-
-// Hide status message
-function hideStatusMessage() {
-    const statusMessage = document.getElementById('status-message');
-    if (statusMessage) {
-        statusMessage.style.display = 'none';
-    }
-}
-
-// Email service modal functions
-function openEmailService(service) {
-    // This function can be used for fallback mailto functionality if needed
-    closeEmailModal();
-}
-
-function closeEmailModal() {
-    const modal = document.getElementById('email-service-modal');
-    if (modal) {
-        modal.classList.remove('show');
-    }
-}
-
-// Load contact social links
-async function loadContactSocialLinks() {
-    try {
-        const response = await fetch('./api/social.json');
-        const data = await response.json();
-        
-        const socialLinksContainer = document.getElementById('contact-social-links');
-        
-        if (socialLinksContainer && data.social_links) {
-            // Filter social media links
-            const socialLinks = data.social_links.filter(link => link.type === 'social');
-            
-            if (socialLinks.length > 0) {
-                socialLinksContainer.innerHTML = socialLinks
-                    .map(link => {
-                        if (link.url && link.url.trim() !== '') {
-                            return `
-                                <a href="${link.url}" target="_blank" class="social-icon" title="${link.name}">
-                                    <i class="${link.icon}"></i>
-                                </a>
-                            `;
-                        } else {
-                            return `
-                                <span class="social-icon inactive" title="${link.name} - Şuanlık aktif değil">
-                                    <i class="${link.icon}"></i>
-                                </span>
-                            `;
-                        }
-                    })
-                    .join('');
-            } else {
-                socialLinksContainer.innerHTML = '<p>Sosyal medya linkleri yükleniyor...</p>';
-            }
-        }
-    } catch (error) {
-        console.error('Error loading contact social links:', error);
-        const socialLinksContainer = document.getElementById('contact-social-links');
-        if (socialLinksContainer) {
-            socialLinksContainer.innerHTML = '<p>Sosyal medya linkleri yüklenemedi</p>';
-        }
     }
 }
 
@@ -471,7 +338,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load dynamic content
     loadFeaturedProjects();
     loadBlogPosts();
-    loadContactSocialLinks();
     
     // Initialize components
     initProjectsModal();
