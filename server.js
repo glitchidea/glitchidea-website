@@ -20,7 +20,7 @@ app.use(helmet({
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://unpkg.com"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'"]
+      connectSrc: ["'self'", "http://localhost:*", "https://localhost:*"]
     }
   }
 }));
@@ -39,8 +39,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files middleware
-app.use(express.static(path.join(__dirname, 'public')));
+// Static files middleware - CSS, JS, images etc.
+app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/js', express.static(path.join(__dirname, 'js')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/api', express.static(path.join(__dirname, 'api')));
 
 // View engine setup
 app.set('view engine', 'ejs');
@@ -408,20 +411,34 @@ Gönderim Tarihi: ${currentDate}
 
 // Email gönderme endpoint'i
 app.post('/send-email', async (req, res) => {
+    console.log('📧 Email endpoint called:', req.method, req.url);
+    console.log('📧 Request body:', req.body);
+    
     try {
         const { subject, message, senderEmail } = req.body;
 
         // Veri kontrolü
         if (!subject || !message || !senderEmail) {
+            console.log('❌ Missing required fields');
             return res.status(400).json({
                 success: false,
                 message: 'Tüm alanlar doldurulmalıdır'
             });
         }
 
+        // Environment variables kontrolü
+        if (!process.env.SMTP_USERNAME || !process.env.SMTP_PASSWORD) {
+            console.log('❌ Missing SMTP credentials');
+            return res.status(500).json({
+                success: false,
+                message: 'Email servisi yapılandırılmamış'
+            });
+        }
+
         // Email formatını kontrol et
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(senderEmail)) {
+            console.log('❌ Invalid email format:', senderEmail);
             return res.status(400).json({
                 success: false,
                 message: 'Geçerli bir email adresi giriniz'
@@ -450,7 +467,8 @@ app.post('/send-email', async (req, res) => {
         // Email gönder
         const info = await transporter.sendMail(mailOptions);
 
-        console.log('Email gönderildi:', info.messageId);
+        console.log('✅ Email gönderildi:', info.messageId);
+        console.log('✅ Response sending success');
 
         res.json({
             success: true,
