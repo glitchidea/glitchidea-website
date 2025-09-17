@@ -1,6 +1,6 @@
 # GlitchIdea Portfolio Website
 
-🚀 **Live Site:** [https://glitchidea.github.io/glitchidea-website](https://glitchidea.github.io/glitchidea-website)
+🚀 **Live Site:** [https://glitchidea.com](https://glitchidea.com)
 
 ## 📋 About
 
