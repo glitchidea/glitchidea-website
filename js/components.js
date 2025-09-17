@@ -277,10 +277,64 @@ function showNotification(message, type = 'info') {
 }
 
 // Initialize all components when DOM is loaded
+// Load contact form dynamically
+async function loadContactForm() {
+    try {
+        const contactContainer = document.querySelector('#contact .contact-container');
+        if (!contactContainer) return;
+        
+        // Contact form HTML template
+        const contactFormHTML = `
+            <!-- Email Contact Form - Right Side -->
+            <div class="contact-cta-card contact-form-side" data-aos="fade-left" data-aos-delay="200">
+                <div class="cta-content">
+                    <h3>💌 İletişime Geç</h3>
+                    <p>Hızlı iletişim için mesaj gönderin</p>
+                    
+                    <form id="emailContactForm" class="email-contact-form compact-form">
+                        <div class="form-group">
+                            <label for="emailSubject">Konu *</label>
+                            <input type="text" id="emailSubject" name="subject" required placeholder="Mesaj konunuz...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="emailMessage">Mesajınız *</label>
+                            <textarea id="emailMessage" name="message" rows="4" required placeholder="Mesajınızı buraya yazın..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="senderEmail">E-posta Adresiniz *</label>
+                            <input type="email" id="senderEmail" name="senderEmail" required placeholder="ornek@email.com">
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="sendEmailBtn">
+                                <i class="fas fa-paper-plane"></i>
+                                <span>Mesaj Gönder</span>
+                            </button>
+                        </div>
+                        
+                        <div id="emailStatus" class="email-status"></div>
+                    </form>
+                </div>
+            </div>
+        `;
+        
+        // Add form to contact container
+        contactContainer.insertAdjacentHTML('beforeend', contactFormHTML);
+        
+        console.log('✅ Contact form loaded dynamically');
+        
+    } catch (error) {
+        console.error('Error loading contact form:', error);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Load dynamic content
     loadFeaturedProjects();
     loadBlogPosts();
+    loadContactForm();
     
     // Initialize components
     initProjectsModal();
